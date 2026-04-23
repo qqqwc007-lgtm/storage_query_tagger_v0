@@ -1,0 +1,674 @@
+taxonomy_version: storage_taxonomy_v0.1
+language: en
+description: Initial faceted taxonomy for Storage & Organization query tagging.
+
+dimensions:
+  domain: {multi_label: false, description: Whether query is storage-related.}
+  location: {multi_label: true, description: Explicit usage location or placement.}
+  target_object: {multi_label: true, description: Object being stored, organized, displayed, or protected.}
+  product_form: {multi_label: true, description: Product shape or storage form.}
+  purpose: {multi_label: true, description: User purpose or intent.}
+  attribute: {multi_label: true, description: Material, structure, placement, or feature.}
+  scenario: {multi_label: true, description: Business-operational compound scenario.}
+
+tags:
+  - tag_id: domain_storage_related
+    dimension: domain
+    canonical_name: Storage Related
+    zh_name: 收纳相关
+    aliases: [storage related]
+    definition: Query explicitly expresses storage, organization, display, or a storage product form.
+    positive_examples: [shoe rack, closet organizers and storage, storage bins with lids]
+    negative_examples: [shoes for women, old spice deodorant, under cabinet lighting]
+    status: active
+  - tag_id: domain_not_storage
+    dimension: domain
+    canonical_name: Not Storage
+    zh_name: 非收纳
+    aliases: [not storage]
+    definition: Query is not about storage or organization.
+    positive_examples: [old spice deodorant, nike shoes men, under cabinet lighting]
+    negative_examples: [shoe rack, spice rack]
+    status: active
+  - tag_id: domain_ambiguous
+    dimension: domain
+    canonical_name: Ambiguous
+    zh_name: 模糊
+    aliases: [ambiguous]
+    definition: Query may be related to storage, but lacks explicit evidence in v0.
+    positive_examples: [lego, makeup, shelf]
+    negative_examples: [lego storage box, makeup organizer]
+    status: active
+
+  # Location
+  - tag_id: loc_bathroom
+    dimension: location
+    canonical_name: Bathroom
+    zh_name: 浴室
+    aliases: [bathroom, bath room, restroom]
+    definition: Storage used in bathroom.
+    positive_examples: [bathroom organizers and storage, bathroom cabinet]
+    negative_examples: [bathroom rugs]
+    status: active
+  - tag_id: loc_kitchen
+    dimension: location
+    canonical_name: Kitchen
+    zh_name: 厨房
+    aliases: [kitchen]
+    definition: Storage used in kitchen.
+    positive_examples: [kitchen cabinet organizer]
+    negative_examples: [kitchen faucet]
+    status: active
+  - tag_id: loc_pantry
+    dimension: location
+    canonical_name: Pantry
+    zh_name: 食品储藏间
+    aliases: [pantry]
+    definition: Storage used in pantry.
+    positive_examples: [pantry organizers and storage]
+    negative_examples: [pantry moth traps]
+    status: active
+  - tag_id: loc_closet
+    dimension: location
+    canonical_name: Closet
+    zh_name: 衣橱
+    aliases: [closet, wardrobe]
+    definition: Storage used in closet.
+    positive_examples: [closet organizers and storage, closet organizer]
+    negative_examples: [closet light]
+    status: active
+  - tag_id: loc_garage
+    dimension: location
+    canonical_name: Garage
+    zh_name: 车库
+    aliases: [garage]
+    definition: Storage used in garage.
+    positive_examples: [garage storage, garage tool storage]
+    negative_examples: [garage door opener]
+    status: active
+  - tag_id: loc_laundry_room
+    dimension: location
+    canonical_name: Laundry Room
+    zh_name: 洗衣房
+    aliases: [laundry room, laundry]
+    definition: Storage for laundry room or laundry-related area.
+    positive_examples: [laundry room organization, laundry basket]
+    negative_examples: [laundry detergent]
+    status: active
+  - tag_id: loc_entryway
+    dimension: location
+    canonical_name: Entryway
+    zh_name: 玄关
+    aliases: [entryway, entry way, foyer, hallway]
+    definition: Storage used in entrance or hallway.
+    positive_examples: [shoe rack for entryway, entryway organizer]
+    negative_examples: [hallway runner rug]
+    status: active
+  - tag_id: loc_under_bed
+    dimension: location
+    canonical_name: Under Bed
+    zh_name: 床底
+    aliases: [under bed, underbed]
+    definition: Storage placed under a bed.
+    positive_examples: [under bed storage]
+    negative_examples: [bed skirt]
+    status: active
+  - tag_id: loc_under_sink
+    dimension: location
+    canonical_name: Under Sink
+    zh_name: 水槽下
+    aliases: [under sink, under-sink, beneath sink]
+    definition: Storage placed under a sink.
+    positive_examples: [under sink organizer, under sink storage]
+    negative_examples: [sink strainer]
+    status: active
+  - tag_id: loc_over_toilet
+    dimension: location
+    canonical_name: Over Toilet
+    zh_name: 马桶上方
+    aliases: [over the toilet, over toilet, above toilet]
+    definition: Storage placed over or above the toilet.
+    positive_examples: [over the toilet storage cabinet]
+    negative_examples: [toilet seat]
+    status: active
+  - tag_id: loc_shower
+    dimension: location
+    canonical_name: Shower
+    zh_name: 淋浴区
+    aliases: [shower]
+    definition: Storage used in shower area.
+    positive_examples: [shower caddy, shower organizer, shower shelves]
+    negative_examples: [shower curtain]
+    status: active
+  - tag_id: loc_desk_home_office
+    dimension: location
+    canonical_name: Desk / Home Office
+    zh_name: 书桌/办公
+    aliases: [desk, office, home office]
+    definition: Storage around desk or office.
+    positive_examples: [desk organizer]
+    negative_examples: [office chair]
+    status: active
+
+  # Target object
+  - tag_id: obj_shoes
+    dimension: target_object
+    canonical_name: Shoes
+    zh_name: 鞋类
+    aliases: [shoe, shoes, footwear]
+    definition: Shoes or footwear to be stored or organized.
+    positive_examples: [shoe rack, shoe organizer, shoe storage]
+    negative_examples: [shoes for women, nike shoes men]
+    status: active
+  - tag_id: obj_clothes
+    dimension: target_object
+    canonical_name: Clothes
+    zh_name: 衣物
+    aliases: [clothes, clothing, apparel, coat, coats]
+    definition: Clothes to be stored or organized.
+    positive_examples: [clothes rack, clothes organizer]
+    negative_examples: [clothes for women]
+    status: active
+  - tag_id: obj_toys
+    dimension: target_object
+    canonical_name: Toys
+    zh_name: 玩具
+    aliases: [toy, toys, stuffed animal, stuffed animals]
+    definition: Toys or stuffed animals to be stored.
+    positive_examples: [toy storage, stuffed animal storage]
+    negative_examples: [toy car]
+    status: active
+  - tag_id: obj_lego
+    dimension: target_object
+    canonical_name: Lego
+    zh_name: 乐高
+    aliases: [lego, legos]
+    definition: Lego bricks or sets to be stored, organized, or displayed.
+    positive_examples: [lego storage, lego display shelf]
+    negative_examples: [lego]
+    status: active
+  - tag_id: obj_makeup
+    dimension: target_object
+    canonical_name: Makeup
+    zh_name: 化妆品
+    aliases: [makeup, cosmetic, cosmetics]
+    definition: Makeup or cosmetics to be stored or organized.
+    positive_examples: [makeup organizer, makeup storage]
+    negative_examples: [makeup remover]
+    status: active
+  - tag_id: obj_jewelry
+    dimension: target_object
+    canonical_name: Jewelry
+    zh_name: 首饰
+    aliases: [jewelry, jewellery, ring, rings, necklace, necklaces, earring, earrings]
+    definition: Jewelry to be stored, organized, displayed, or protected.
+    positive_examples: [jewelry box, jewelry organizer]
+    negative_examples: [gold necklace]
+    status: active
+  - tag_id: obj_food
+    dimension: target_object
+    canonical_name: Food
+    zh_name: 食物
+    aliases: [food, meal prep, leftovers]
+    definition: Food to be stored.
+    positive_examples: [food storage containers, meal prep containers]
+    negative_examples: [dog food storage container]
+    status: active
+  - tag_id: obj_pet_food
+    dimension: target_object
+    canonical_name: Pet Food
+    zh_name: 宠物食品
+    aliases: [pet food, dog food, cat food]
+    definition: Pet food to be stored.
+    positive_examples: [dog food storage container, pet food container]
+    negative_examples: [dog food]
+    status: active
+  - tag_id: obj_spices
+    dimension: target_object
+    canonical_name: Spices
+    zh_name: 香料
+    aliases: [spice, spices, seasoning, seasonings]
+    definition: Spices to be stored or organized.
+    positive_examples: [spice rack, spice organizer]
+    negative_examples: [old spice deodorant]
+    status: active
+  - tag_id: obj_tools
+    dimension: target_object
+    canonical_name: Tools
+    zh_name: 工具
+    aliases: [tool, tools, garden tool, garden tools]
+    definition: Tools to be stored or organized.
+    positive_examples: [tool box, tool storage]
+    negative_examples: [tool set]
+    status: active
+  - tag_id: obj_towels
+    dimension: target_object
+    canonical_name: Towels
+    zh_name: 毛巾
+    aliases: [towel, towels]
+    definition: Towels to be stored or organized.
+    positive_examples: [towel rack, towel storage]
+    negative_examples: [bath towels]
+    status: active
+  - tag_id: obj_ornaments
+    dimension: target_object
+    canonical_name: Ornaments
+    zh_name: 节日装饰
+    aliases: [ornament, ornaments, christmas ornament, christmas ornaments, christmas tree]
+    definition: Holiday ornaments or Christmas tree items to be stored.
+    positive_examples: [ornament storage box, christmas tree storage bag]
+    negative_examples: [christmas ornament]
+    status: active
+  - tag_id: obj_books
+    dimension: target_object
+    canonical_name: Books
+    zh_name: 书籍
+    aliases: [book, books]
+    definition: Books to be stored or displayed.
+    positive_examples: [book shelf, bookshelf]
+    negative_examples: [book]
+    status: active
+  - tag_id: obj_documents
+    dimension: target_object
+    canonical_name: Documents
+    zh_name: 文件
+    aliases: [document, documents, file, files, paper, papers]
+    definition: Documents or files to be stored.
+    positive_examples: [file organizer, paper organizer]
+    negative_examples: [printer paper]
+    status: active
+  - tag_id: obj_medicine
+    dimension: target_object
+    canonical_name: Medicine
+    zh_name: 药品
+    aliases: [medicine, medication, pill, pills]
+    definition: Medicine or pills to be organized.
+    positive_examples: [pill organizer, medicine cabinet]
+    negative_examples: [tinnitus relief pills]
+    status: active
+  - tag_id: obj_laundry
+    dimension: target_object
+    canonical_name: Laundry
+    zh_name: 待洗衣物
+    aliases: [laundry]
+    definition: Laundry to be collected or stored.
+    positive_examples: [laundry basket, laundry hamper]
+    negative_examples: [laundry detergent]
+    status: active
+
+  # Product form
+  - tag_id: form_rack
+    dimension: product_form
+    canonical_name: Rack
+    zh_name: 架
+    aliases: [rack, racks]
+    definition: Rack form.
+    positive_examples: [shoe rack, spice rack]
+    negative_examples: []
+    status: active
+  - tag_id: form_shelf
+    dimension: product_form
+    canonical_name: Shelf
+    zh_name: 置物架/层板
+    aliases: [shelf, shelves, shelving, bookshelf, book shelf]
+    definition: Shelf or shelving form.
+    positive_examples: [floating shelves, book shelf]
+    negative_examples: [shelf liner]
+    status: active
+  - tag_id: form_cabinet
+    dimension: product_form
+    canonical_name: Cabinet
+    zh_name: 柜
+    aliases: [cabinet, cabinets]
+    definition: Cabinet form.
+    positive_examples: [storage cabinet, shoe cabinet]
+    negative_examples: [under cabinet lighting]
+    status: active
+  - tag_id: form_bin
+    dimension: product_form
+    canonical_name: Bin
+    zh_name: 收纳箱
+    aliases: [bin, bins]
+    definition: Bin form.
+    positive_examples: [storage bins, storage bins with lids]
+    negative_examples: [trash bin]
+    status: active
+  - tag_id: form_basket
+    dimension: product_form
+    canonical_name: Basket
+    zh_name: 篮
+    aliases: [basket, baskets, hamper, hampers]
+    definition: Basket or hamper form.
+    positive_examples: [laundry basket, storage basket]
+    negative_examples: [basketball, easter basket stuffers]
+    status: active
+  - tag_id: form_box
+    dimension: product_form
+    canonical_name: Box
+    zh_name: 盒/箱
+    aliases: [box, boxes]
+    definition: Box form.
+    positive_examples: [jewelry box, ornament storage box]
+    negative_examples: [box cutter, boxers for men, xbox]
+    status: active
+  - tag_id: form_bag
+    dimension: product_form
+    canonical_name: Bag
+    zh_name: 袋
+    aliases: [bag, bags]
+    definition: Bag form when explicitly used for storage.
+    positive_examples: [vacuum storage bags, christmas tree storage bag]
+    negative_examples: [tote bag, crossbody bag, trash bags]
+    status: active
+  - tag_id: form_container
+    dimension: product_form
+    canonical_name: Container
+    zh_name: 容器
+    aliases: [container, containers]
+    definition: Container form.
+    positive_examples: [food storage containers, meal prep containers]
+    negative_examples: []
+    status: active
+  - tag_id: form_drawer_organizer
+    dimension: product_form
+    canonical_name: Drawer Organizer
+    zh_name: 抽屉整理器
+    aliases: [drawer organizer, drawer organizers, drawer divider, drawer dividers]
+    definition: Organizer or divider used inside drawers.
+    positive_examples: [drawer organizer]
+    negative_examples: [drawer pulls]
+    status: active
+  - tag_id: form_hook
+    dimension: product_form
+    canonical_name: Hook
+    zh_name: 挂钩
+    aliases: [hook, hooks, command hook, command hooks]
+    definition: Hook used for hanging.
+    positive_examples: [command hooks, wall hooks]
+    negative_examples: [fishing hooks]
+    status: active
+  - tag_id: form_hanger
+    dimension: product_form
+    canonical_name: Hanger
+    zh_name: 衣架
+    aliases: [hanger, hangers]
+    definition: Hanger form.
+    positive_examples: [hangers, velvet hangers]
+    negative_examples: []
+    status: active
+  - tag_id: form_caddy
+    dimension: product_form
+    canonical_name: Caddy
+    zh_name: 收纳篮/收纳盒
+    aliases: [caddy, caddies]
+    definition: Caddy form.
+    positive_examples: [shower caddy, diaper caddy]
+    negative_examples: [golf caddy]
+    status: active
+  - tag_id: form_cart
+    dimension: product_form
+    canonical_name: Cart
+    zh_name: 推车
+    aliases: [cart, carts, rolling cart]
+    definition: Cart used for storage.
+    positive_examples: [rolling storage cart]
+    negative_examples: [shopping cart]
+    status: active
+  - tag_id: form_holder
+    dimension: product_form
+    canonical_name: Holder
+    zh_name: 支架/收纳架
+    aliases: [holder, holders, stand, stands]
+    definition: Holder or stand used to organize an item.
+    positive_examples: [toilet paper holder, jewelry holder]
+    negative_examples: [phone stand]
+    status: active
+  - tag_id: form_organizer
+    dimension: product_form
+    canonical_name: Organizer
+    zh_name: 整理器
+    aliases: [organizer, organizers]
+    definition: Generic organizer.
+    positive_examples: [desk organizer, bathroom organizer]
+    negative_examples: [event organizer]
+    status: active
+
+  # Purpose
+  - tag_id: purpose_storage
+    dimension: purpose
+    canonical_name: Storage
+    zh_name: 存储/收纳
+    aliases: [storage, store, storing]
+    definition: Intent to store items.
+    positive_examples: [shoe storage, under bed storage]
+    negative_examples: []
+    status: active
+  - tag_id: purpose_organization
+    dimension: purpose
+    canonical_name: Organization
+    zh_name: 整理/归类
+    aliases: [organization, organize, organized, organizer, organizers]
+    definition: Intent to organize items.
+    positive_examples: [closet organization, makeup organizer]
+    negative_examples: []
+    status: active
+  - tag_id: purpose_display
+    dimension: purpose
+    canonical_name: Display
+    zh_name: 展示
+    aliases: [display, display shelf, display case]
+    definition: Intent to display items.
+    positive_examples: [lego display shelf, jewelry display case]
+    negative_examples: []
+    status: active
+  - tag_id: purpose_space_saving
+    dimension: purpose
+    canonical_name: Space Saving
+    zh_name: 节省空间
+    aliases: [space saving, space saver, compact, slim, narrow]
+    definition: Intent to save space.
+    positive_examples: [space saving hangers, narrow storage cabinet]
+    negative_examples: []
+    status: active
+  - tag_id: purpose_protection
+    dimension: purpose
+    canonical_name: Protection
+    zh_name: 防护
+    aliases: [dustproof, dust proof, protective, waterproof]
+    definition: Intent to protect stored items.
+    positive_examples: [ornament storage box, waterproof storage bins]
+    negative_examples: []
+    status: active
+
+  # Attribute
+  - tag_id: attr_with_lid
+    dimension: attribute
+    canonical_name: With Lid
+    zh_name: 带盖
+    aliases: [with lid, with lids, lidded, lid, lids]
+    definition: Product has lid.
+    positive_examples: [storage bins with lids]
+    negative_examples: []
+    status: active
+  - tag_id: attr_stackable
+    dimension: attribute
+    canonical_name: Stackable
+    zh_name: 可堆叠
+    aliases: [stackable, stacking]
+    definition: Product can be stacked.
+    positive_examples: [stackable storage bins]
+    negative_examples: []
+    status: active
+  - tag_id: attr_clear
+    dimension: attribute
+    canonical_name: Clear
+    zh_name: 透明
+    aliases: [clear, transparent]
+    definition: Transparent product.
+    positive_examples: [clear storage bins]
+    negative_examples: []
+    status: active
+  - tag_id: attr_glass
+    dimension: attribute
+    canonical_name: Glass
+    zh_name: 玻璃
+    aliases: [glass]
+    definition: Glass material.
+    positive_examples: [glass food storage containers]
+    negative_examples: []
+    status: active
+  - tag_id: attr_plastic
+    dimension: attribute
+    canonical_name: Plastic
+    zh_name: 塑料
+    aliases: [plastic]
+    definition: Plastic material.
+    positive_examples: [plastic storage bins]
+    negative_examples: []
+    status: active
+  - tag_id: attr_wall_mounted
+    dimension: attribute
+    canonical_name: Wall Mounted
+    zh_name: 壁挂
+    aliases: [wall mounted, wall mount, wall shelves, floating shelves]
+    definition: Product is mounted on wall.
+    positive_examples: [floating shelves]
+    negative_examples: []
+    status: active
+  - tag_id: attr_vacuum
+    dimension: attribute
+    canonical_name: Vacuum
+    zh_name: 真空压缩
+    aliases: [vacuum, vacuum sealed, vacuum storage]
+    definition: Vacuum compression or sealing.
+    positive_examples: [vacuum storage bags]
+    negative_examples: []
+    status: active
+  - tag_id: attr_over_door
+    dimension: attribute
+    canonical_name: Over Door
+    zh_name: 门后/门上
+    aliases: [over door, over the door, behind door]
+    definition: Product placed over or behind door.
+    positive_examples: [over the door organizer]
+    negative_examples: []
+    status: active
+
+  # Scenario
+  - tag_id: scn_closet_organization
+    dimension: scenario
+    canonical_name: Closet Organization
+    zh_name: 衣橱整理
+    aliases: [closet organization, closet organizer, closet organizers and storage]
+    definition: Organizing closet space.
+    positive_examples: [closet organizers and storage]
+    negative_examples: [closet light]
+    status: active
+  - tag_id: scn_bathroom_organization
+    dimension: scenario
+    canonical_name: Bathroom Organization
+    zh_name: 浴室整理
+    aliases: [bathroom organization, bathroom organizer, bathroom organizers and storage]
+    definition: Organizing bathroom space.
+    positive_examples: [bathroom organizers and storage]
+    negative_examples: [bathroom rug]
+    status: active
+  - tag_id: scn_pantry_organization
+    dimension: scenario
+    canonical_name: Pantry Organization
+    zh_name: 食品储藏间整理
+    aliases: [pantry organization, pantry organizer, pantry organizers and storage]
+    definition: Organizing pantry space.
+    positive_examples: [pantry organizers and storage]
+    negative_examples: []
+    status: active
+  - tag_id: scn_under_sink_organization
+    dimension: scenario
+    canonical_name: Under Sink Organization
+    zh_name: 水槽下整理
+    aliases: [under sink organizer, under sink storage, under-sink organizer, under-sink storage]
+    definition: Organizing under-sink space.
+    positive_examples: [under sink organizer]
+    negative_examples: [sink strainer]
+    status: active
+  - tag_id: scn_shower_organization
+    dimension: scenario
+    canonical_name: Shower Organization
+    zh_name: 淋浴区整理
+    aliases: [shower organizer, shower caddy, shower shelves]
+    definition: Organizing shower space.
+    positive_examples: [shower caddy, shower organizer]
+    negative_examples: [shower curtain]
+    status: active
+  - tag_id: scn_entryway_shoe_organization
+    dimension: scenario
+    canonical_name: Entryway Shoe Organization
+    zh_name: 玄关鞋类整理
+    aliases: [shoe rack for entryway, entryway shoe rack, shoe storage for entryway]
+    definition: Organizing shoes in entryway.
+    positive_examples: [shoe rack for entryway]
+    negative_examples: []
+    status: active
+  - tag_id: scn_holiday_storage
+    dimension: scenario
+    canonical_name: Holiday Storage
+    zh_name: 节日用品收纳
+    aliases: [holiday storage, christmas storage, ornament storage, christmas tree storage]
+    definition: Storage for holiday items.
+    positive_examples: [ornament storage box, christmas tree storage bag]
+    negative_examples: [christmas ornament]
+    status: active
+  - tag_id: scn_makeup_organization
+    dimension: scenario
+    canonical_name: Makeup Organization
+    zh_name: 化妆品整理
+    aliases: [makeup organizer, makeup storage, cosmetic organizer]
+    definition: Organizing makeup or cosmetics.
+    positive_examples: [makeup organizer]
+    negative_examples: [makeup remover]
+    status: active
+  - tag_id: scn_jewelry_organization
+    dimension: scenario
+    canonical_name: Jewelry Organization
+    zh_name: 首饰整理
+    aliases: [jewelry organizer, jewelry box, jewelry storage]
+    definition: Organizing jewelry.
+    positive_examples: [jewelry box, jewelry organizer]
+    negative_examples: [gold necklace]
+    status: active
+  - tag_id: scn_garage_tool_storage
+    dimension: scenario
+    canonical_name: Garage Tool Storage
+    zh_name: 车库工具收纳
+    aliases: [garage tool storage, tool storage, tool organizer]
+    definition: Storing or organizing tools.
+    positive_examples: [garage tool storage, tool box]
+    negative_examples: [tool set]
+    status: active
+  - tag_id: scn_toy_storage
+    dimension: scenario
+    canonical_name: Toy Storage
+    zh_name: 玩具收纳
+    aliases: [toy storage, toy organizer, stuffed animal storage]
+    definition: Storing or organizing toys.
+    positive_examples: [toy storage, stuffed animal storage]
+    negative_examples: [toy car]
+    status: active
+  - tag_id: scn_desk_organization
+    dimension: scenario
+    canonical_name: Desk Organization
+    zh_name: 桌面整理
+    aliases: [desk organizer, desk organization, office organizer]
+    definition: Organizing desk or office items.
+    positive_examples: [desk organizer]
+    negative_examples: [office chair]
+    status: active
+  - tag_id: scn_laundry_organization
+    dimension: scenario
+    canonical_name: Laundry Organization
+    zh_name: 洗衣整理
+    aliases: [laundry basket, laundry hamper, laundry organizer]
+    definition: Collecting, storing, or organizing laundry.
+    positive_examples: [laundry basket]
+    negative_examples: [laundry detergent]
+    status: active

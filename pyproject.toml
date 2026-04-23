@@ -1,0 +1,22 @@
+[project]
+name = "storage-query-tagger-v0"
+version = "0.1.0"
+description = "V0 faceted query tagging framework for Storage & Organization search terms."
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.0.0",
+    "pyyaml>=6.0.0",
+    "numpy>=1.24.0",
+    "scikit-learn>=1.3.0"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0"]
+
+[project.scripts]
+storage-tagger = "storage_tagger.cli:main"
+storage-taxonomy = "storage_taxonomy.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

@@ -1,0 +1,25 @@
+query,expected_domain_label,expected_tag_ids,note
+shoe rack,storage_related,obj_shoes;form_rack,example
+closet organizers and storage,storage_related,loc_closet;form_organizer;purpose_storage;purpose_organization;scn_closet_organization,example
+bathroom organizers and storage,storage_related,loc_bathroom;form_organizer;purpose_storage;purpose_organization;scn_bathroom_organization,example
+storage bins with lids,storage_related,form_bin;purpose_storage;attr_with_lid,example
+spice rack,storage_related,obj_spices;form_rack;purpose_organization,example
+makeup organizer,storage_related,obj_makeup;form_organizer;purpose_organization;scn_makeup_organization,example
+under sink organizer,storage_related,loc_under_sink;form_organizer;purpose_organization;scn_under_sink_organization,example
+shoe rack for entryway,storage_related,obj_shoes;form_rack;loc_entryway;purpose_organization;scn_entryway_shoe_organization,example
+over the toilet storage cabinet,storage_related,loc_bathroom;loc_over_toilet;form_cabinet;purpose_storage,example
+dog food storage container,storage_related,obj_pet_food;form_container;purpose_storage,example
+toy storage,storage_related,obj_toys;purpose_storage;scn_toy_storage,example
+jewelry box,storage_related,obj_jewelry;form_box;scn_jewelry_organization,example
+old spice deodorant for men,not_storage,,example
+under cabinet lighting,not_storage,,example
+trash bags,not_storage,,example
+basketball,not_storage,,example
+box cutter,not_storage,,example
+lego,ambiguous,,example
+makeup,ambiguous,,example
+glass food storage containers with lids,storage_related,obj_food;form_container;purpose_storage;attr_glass;attr_with_lid,example
+ornament storage box,storage_related,obj_ornaments;form_box;purpose_storage;scn_holiday_storage,example
+christmas tree storage bag,storage_related,obj_ornaments;form_bag;purpose_storage;scn_holiday_storage,example
+lego display shelf,storage_related,obj_lego;form_shelf;purpose_display,example
+clear stackable storage bins,storage_related,form_bin;purpose_storage;attr_clear;attr_stackable,example

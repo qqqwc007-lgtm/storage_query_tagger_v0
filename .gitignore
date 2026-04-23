@@ -1,0 +1,14 @@
+.venv*/
+__pycache__/
+*.pyc
+.pytest_cache/
+outputs/**
+!outputs/.gitkeep
+guard_test_output*/
+tmp_write_test.txt
+.tmp-write/
+.touch-test
+data/local/
+data/raw/
+data/intermediate/
+.DS_Store

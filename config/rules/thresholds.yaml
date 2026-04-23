@@ -1,0 +1,11 @@
+mapping:
+  mapped_min_non_empty_fields: 2
+review_queue:
+  high_value_rank_quantile: 0.2
+  high_frequency_pattern_quantile: 0.8
+  core_fields:
+    - 产品使用场景
+    - 存储对象
+    - 产品使用场地
+candidate_discovery:
+  min_frequency: 1

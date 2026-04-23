@@ -1,0 +1,10 @@
+[
+  {"axis": "产品形态关键词", "child": "storage cabinet", "parent": "cabinet"},
+  {"axis": "产品形态关键词", "child": "storage container", "parent": "container"},
+  {"axis": "产品形态关键词", "child": "storage bin", "parent": "bin"},
+  {"axis": "产品形态关键词", "child": "display shelf", "parent": "shelf"},
+  {"axis": "存储对象", "child": "boot", "parent": "shoe"},
+  {"axis": "存储对象", "child": "pet food", "parent": "food"},
+  {"axis": "存储对象", "child": "christmas tree", "parent": "ornament"},
+  {"axis": "产品使用场地", "child": "over toilet", "parent": "bathroom"}
+]

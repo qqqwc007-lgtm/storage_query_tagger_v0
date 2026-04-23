@@ -1,0 +1,10 @@
+workflow_version: workflow_v1.0
+taxonomy_version: taxonomy_v0
+keyword:
+  required_columns:
+    - search_term
+title:
+  required_columns:
+    - search_term
+    - asin
+    - title

@@ -1,0 +1,13 @@
+multi_value_fields:
+  - 产品形态关键词
+single_value_fields:
+  - 产品使用场景
+  - 存储对象
+  - 产品材质
+  - 尺寸
+  - 产品使用场地
+  - 产品功能
+core_fields:
+  - 产品使用场景
+  - 存储对象
+  - 产品使用场地

@@ -1,0 +1,15 @@
+# v1+ placeholder. v0 is rules + taxonomy config driven.
+embedding:
+  enabled: false
+  provider: openai_or_local
+  model_name: text-embedding-model-placeholder
+
+llm_extraction:
+  enabled: false
+  provider: openai_or_local
+  model_name: llm-placeholder
+
+supervised_models:
+  enabled: false
+  domain_gate_model: models/domain_gate.pkl
+  multilabel_model: models/multilabel_tagger.pkl

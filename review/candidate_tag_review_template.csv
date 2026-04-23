@@ -1,0 +1,2 @@
+cluster_id,candidate_tag_name,dimension,parent_tag_id,definition,positive_examples,negative_examples,top_queries,top_terms,similar_existing_tags,recommended_action,review_status,approved_tag_id,reviewer,review_note
+0,under_sink_organization,scenario,scn_bathroom_organization,用于水槽下方空间的整理/收纳需求,under sink organizer|under sink storage,sink strainer,under sink organizer | under sink storage,under sink;organizer;storage,loc_under_sink|scn_under_sink_organization,merge_to_existing,pending,,,

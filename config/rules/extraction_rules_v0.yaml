@@ -1,0 +1,42 @@
+normalizer:
+  phrase_rewrites:
+    over the toilet: over toilet
+    above toilet: over toilet
+    under-sink: under sink
+    storage containers: storage container
+    storage bins: storage bin
+    display shelves: display shelf
+    with lids: with lid
+  stopwords:
+    - a
+    - an
+    - and
+    - for
+    - in
+    - of
+    - on
+    - the
+    - with
+    - from
+    - organizer
+    - organizers
+    - organization
+    - storage
+    - holder
+
+domain_gate:
+  positive_patterns:
+    - '\bstorage\b'
+    - '\borganizer(s)?\b'
+    - '\borganization\b'
+    - '\bshoe\s+(rack|cabinet|storage)\b'
+    - '\b(food|meal\s+prep)\s+storage\s+container(s)?\b'
+    - '\bunder\s+sink\s+(organizer|storage)\b'
+    - '\bover\s+toilet\s+storage\b'
+    - '\blego\s+display\s+shelf\b'
+    - '\bbathroom\s+(organizer|organization|storage)\b'
+    - '\bcloset\s+(organizer|organization|storage)\b'
+    - '\bpantry\s+(organizer|organization|storage)\b'
+    - '\bgarage\s+tool\s+storage\b'
+    - '\bstorage\s+(bin|container|cabinet|box|bag)\b'
+    - '\bdisplay\s+(shelf|case)\b'

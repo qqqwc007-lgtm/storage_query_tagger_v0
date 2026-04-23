@@ -1,0 +1,3 @@
+query,domain_label,location_tags,target_object_tags,product_form_tags,purpose_tags,attribute_tags,scenario_tags,is_new_tag_needed,new_tag_suggestion,reviewer,review_note
+shoe rack,storage_related,,obj_shoes,form_rack,purpose_storage,,,false,,,
+old spice deodorant for men,not_storage,,,,,,,,false,,品牌 Old Spice 负例

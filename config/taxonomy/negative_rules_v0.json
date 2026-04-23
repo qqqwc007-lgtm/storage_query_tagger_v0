@@ -1,0 +1,25 @@
+{
+  "not_storage_patterns": [
+    "\\bold\\s+spice\\b",
+    "\\bunder\\s+cabinet\\s+lighting\\b",
+    "\\bgarage\\s+door\\s+opener\\b",
+    "\\brunning\\s+shoes?\\b",
+    "\\bshoes?\\s+for\\b",
+    "\\blego\\s+set\\b",
+    "\\bmakeup\\s+remover\\b",
+    "\\bdog\\s+food\\b(?!\\s+(storage\\s+)?container)",
+    "\\bkids?\\s+toys?\\b",
+    "\\bchristmas\\s+ornaments?\\b(?!.*storage)",
+    "\\btoilet\\s+brush\\b"
+  ],
+  "ambiguous_terms": [
+    "lego",
+    "makeup",
+    "shoe",
+    "toy",
+    "bathroom",
+    "garage",
+    "kitchen cabinet",
+    "desk"
+  ]
+}

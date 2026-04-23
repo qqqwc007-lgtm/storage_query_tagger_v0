@@ -1,0 +1,188 @@
+taxonomy_version: storage_taxonomy_v0.1
+
+domain_gate:
+  high_precision_positive_patterns:
+    - '\bstorage\b'
+    - '\bstoring\b'
+    - '\borganization\b'
+    - '\borganize\b'
+    - '\borganized\b'
+    - '\borganizer(s)?\b'
+    - '\bshoe\s+rack\b'
+    - '\bshoe\s+cabinet\b'
+    - '\bshoe\s+storage\b'
+    - '\bspice\s+rack\b'
+    - '\bjewelry\s+(box|organizer|storage)\b'
+    - '\bmakeup\s+(organizer|storage|bag)\b'
+    - '\bcosmetic\s+(organizer|storage)\b'
+    - '\bfood\s+storage\s+container(s)?\b'
+    - '\bmeal\s+prep\s+container(s)?\b'
+    - '\bpet\s+food\s+(storage\s+)?container(s)?\b'
+    - '\bdog\s+food\s+(storage\s+)?container(s)?\b'
+    - '\bornament\s+storage\b'
+    - '\bchristmas\s+tree\s+storage\b'
+    - '\bunder\s+sink\s+(organizer|storage)\b'
+    - '\bover\s+(the\s+)?toilet\s+storage\b'
+    - '\bshower\s+(caddy|organizer|shel(f|ves))\b'
+    - '\bdesk\s+organizer\b'
+    - '\bdrawer\s+organizer\b'
+    - '\btool\s+(box|storage|organizer)\b'
+    - '\btoy\s+storage\b'
+    - '\bstuffed\s+animal\s+storage\b'
+    - '\bcloset\s+(organizer|organization|storage)\b'
+    - '\bbathroom\s+(organizer|organization|storage)\b'
+    - '\bpantry\s+(organizer|organization|storage)\b'
+    - '\bbook\s+shelf\b|\bbookshelf\b'
+    - '\bfloating\s+shelves\b'
+    - '\bvacuum\s+storage\s+bags?\b'
+    - '\bover\s+the\s+door\s+organizer\b'
+    - '\bdisplay\s+(shelf|case|shelves)\b'
+    - '\bclear\s+stackable\s+storage\s+bins?\b'
+
+  ambiguous_standalone_terms:
+    - lego
+    - makeup
+    - shoes
+    - shoe
+    - jewelry
+    - shelf
+    - shelves
+    - basket
+    - box
+    - container
+    - closet
+    - garage
+    - cabinet
+
+  high_precision_negative_patterns:
+    - '\bold\s+spice\b'
+    - '\bunder\s+cabinet\s+lighting\b'
+    - '\bbox\s+cutter\b'
+    - '\bboxers?\s+for\b'
+    - '\bxbox\b'
+    - '\bbasketball\b'
+    - '\btrash\s+bags?\b'
+    - '\bgarbage\s+bags?\b'
+    - '\bdog\s+poop\s+bags?\b'
+    - '\bpoop\s+bags?\s+for\s+dogs\b'
+    - '\bcrossbody\s+bags?\b'
+    - '\btote\s+bags?\b'
+    - '\bgym\s+bags?\b'
+    - '\bbeach\s+bags?\b'
+    - '\bcoach\s+handbags?\b'
+    - '\bbogg\s+bag\b'
+    - '\bbag\s+charms?\b'
+    - '\bdiaper\s+bag\b'
+    - '\blunch\s+(box|bag)\b'
+    - '\beaster\s+basket\b'
+    - '\beaster\s+basket\s+stuffers\b'
+    - '\bcat\s+litter\s+box\b'
+    - '\blitter\s+box\b'
+    - '\bautomatic\s+litter\s+box\b'
+    - '\bbread\s+box\b'
+    - '\bpill\b(?!\s+organizer)'
+    - '\bmedicine\b(?!\s+(cabinet|organizer|storage))'
+    - '\bshoes?\s+for\b'
+    - '\bnike\s+shoes?\b'
+    - '\bmakeup\s+remover\b'
+    - '\bgarage\s+door\s+opener\b'
+    - '\bshower\s+curtain\b'
+    - '\bshower\s+curtain\s+hooks\b'
+
+tagging:
+  pattern_rules:
+    - name: entryway_shoe_rack
+      pattern: '\bshoe\s+rack\s+for\s+entryway\b'
+      tags:
+        - {tag_id: obj_shoes, confidence: 0.98, evidence: 'shoe'}
+        - {tag_id: form_rack, confidence: 0.98, evidence: 'rack'}
+        - {tag_id: loc_entryway, confidence: 0.95, evidence: 'for entryway'}
+        - {tag_id: scn_entryway_shoe_organization, confidence: 0.97, evidence: 'shoe rack for entryway'}
+        - {tag_id: purpose_organization, confidence: 0.88, evidence: 'shoe rack pattern'}
+
+    - name: under_sink
+      pattern: '\bunder\s+sink\b|\bunder-sink\b'
+      tags:
+        - {tag_id: loc_under_sink, confidence: 0.97, evidence: 'under sink'}
+        - {tag_id: scn_under_sink_organization, confidence: 0.94, evidence: 'under sink'}
+
+    - name: over_toilet
+      pattern: '\bover\s+(the\s+)?toilet\b|\babove\s+toilet\b'
+      tags:
+        - {tag_id: loc_bathroom, confidence: 0.86, evidence: 'toilet'}
+        - {tag_id: loc_over_toilet, confidence: 0.98, evidence: 'over toilet'}
+
+    - name: food_storage_container
+      pattern: '\b(food\s+storage|meal\s+prep)\s+container(s)?\b'
+      tags:
+        - {tag_id: obj_food, confidence: 0.95, evidence: 'food/meal prep'}
+        - {tag_id: form_container, confidence: 0.96, evidence: 'container'}
+        - {tag_id: purpose_storage, confidence: 0.95, evidence: 'storage/container'}
+
+    - name: pet_food_container
+      pattern: '\b(dog|cat|pet)\s+food\s+(storage\s+)?container(s)?\b'
+      tags:
+        - {tag_id: obj_pet_food, confidence: 0.96, evidence: 'pet food'}
+        - {tag_id: form_container, confidence: 0.96, evidence: 'container'}
+        - {tag_id: purpose_storage, confidence: 0.94, evidence: 'storage/container'}
+
+    - name: spice_rack
+      pattern: '\bspice\s+rack\b'
+      tags:
+        - {tag_id: obj_spices, confidence: 0.98, evidence: 'spice'}
+        - {tag_id: form_rack, confidence: 0.98, evidence: 'rack'}
+        - {tag_id: purpose_organization, confidence: 0.90, evidence: 'rack'}
+
+    - name: jewelry_box
+      pattern: '\bjewelry\s+(box|organizer|storage)\b|\bjewellery\s+(box|organizer|storage)\b'
+      tags:
+        - {tag_id: obj_jewelry, confidence: 0.97, evidence: 'jewelry'}
+        - {tag_id: scn_jewelry_organization, confidence: 0.93, evidence: 'jewelry box/organizer'}
+
+    - name: makeup_organizer
+      pattern: '\b(makeup|cosmetic)\s+(organizer|storage|bag)\b'
+      tags:
+        - {tag_id: obj_makeup, confidence: 0.96, evidence: 'makeup/cosmetic'}
+        - {tag_id: scn_makeup_organization, confidence: 0.92, evidence: 'makeup organizer/storage'}
+
+    - name: holiday_storage
+      pattern: '\b(ornament|christmas\s+tree|christmas\s+ornament).*\bstorage\b|\bornament\s+storage\b'
+      tags:
+        - {tag_id: obj_ornaments, confidence: 0.95, evidence: 'ornament/christmas'}
+        - {tag_id: scn_holiday_storage, confidence: 0.95, evidence: 'holiday storage'}
+
+    - name: toy_storage
+      pattern: '\b(toy|stuffed\s+animal).*\bstorage\b'
+      tags:
+        - {tag_id: obj_toys, confidence: 0.94, evidence: 'toy/stuffed animal'}
+        - {tag_id: scn_toy_storage, confidence: 0.92, evidence: 'toy storage'}
+
+    - name: closet_organization
+      pattern: '\bcloset\s+(organizer|organizers|organization|storage)\b'
+      tags:
+        - {tag_id: loc_closet, confidence: 0.95, evidence: 'closet'}
+        - {tag_id: scn_closet_organization, confidence: 0.95, evidence: 'closet organization/storage'}
+
+    - name: bathroom_organization
+      pattern: '\bbathroom\s+(organizer|organizers|organization|storage)\b'
+      tags:
+        - {tag_id: loc_bathroom, confidence: 0.95, evidence: 'bathroom'}
+        - {tag_id: scn_bathroom_organization, confidence: 0.94, evidence: 'bathroom organization/storage'}
+
+    - name: pantry_organization
+      pattern: '\bpantry\s+(organizer|organizers|organization|storage)\b'
+      tags:
+        - {tag_id: loc_pantry, confidence: 0.95, evidence: 'pantry'}
+        - {tag_id: scn_pantry_organization, confidence: 0.94, evidence: 'pantry organization/storage'}
+
+    - name: laundry_basket
+      pattern: '\blaundry\s+(basket|hamper|organizer|storage)\b'
+      tags:
+        - {tag_id: obj_laundry, confidence: 0.94, evidence: 'laundry'}
+        - {tag_id: loc_laundry_room, confidence: 0.75, evidence: 'laundry'}
+        - {tag_id: scn_laundry_organization, confidence: 0.90, evidence: 'laundry basket/organizer'}
+
+confidence:
+  alias_match_default: 0.82
+  alias_match_purpose: 0.88
+  alias_match_attribute: 0.84

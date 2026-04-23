@@ -1,0 +1,18 @@
+domain:
+  storage_related_min_confidence: 0.75
+  ambiguous_confidence: 0.55
+tagging:
+  min_tag_confidence: 0.70
+  high_confidence: 0.90
+coverage:
+  min_core_tags_for_covered: 2
+  core_dimensions:
+    - target_object
+    - product_form
+    - location
+    - purpose
+    - scenario
+review:
+  needs_review_if_domain_ambiguous: true
+  needs_review_if_storage_related_but_no_core_tag: true
+  needs_review_if_max_tag_confidence_below: 0.75
