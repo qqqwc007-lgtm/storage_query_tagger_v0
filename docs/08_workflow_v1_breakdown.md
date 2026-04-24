@@ -2,13 +2,14 @@
 
 ## 目标
 
-把 `storage_taxonomy_prd_final_v1.md` 从文档变成可执行的本地 workflow，稳定产出：
+把 workflow v1 落地成可执行的本地流程，稳定产出：
 
 - `kw.csv`
 - `st.csv`
 - `diff.csv`
 - `review_queue.csv`
 - `candidate_values.csv`
+- 可选：`keyword_metrics.csv`
 
 ## 现状 vs v1 差距
 
@@ -122,6 +123,34 @@ v1 新增了一层 `storage_taxonomy` 包，保留 v0 原型资产，同时补�
 - 串联 extract -> diff -> review queue -> candidate discovery
 - 写出全部 CSV 和 `metrics_summary.json`
 
+### 8. Sorftime 关键词指标
+
+文件：
+
+- `src/storage_taxonomy/sorftime_client.py`
+- `src/storage_taxonomy/keyword_metrics.py`
+- `scripts/enrich_keyword_metrics.py`
+
+职责：
+
+- 读取 `keyword_input.csv` 中的唯一 `search_term`
+- 调用 Sorftime MCP 的 `keyword_trend`
+- 解析 `搜索排名趋势` 和 `搜索量趋势`
+- 按 `(关键词, 时间)` pivot 成业务表
+- 将 `2024年04月` 等时间规范为 `2024-04`
+
+产物：
+
+```text
+keyword_metrics.csv
+```
+
+固定表头：
+
+```text
+关键词,时间,关键词搜索排名,关键词搜索容量
+```
+
 ## 执行顺序
 
 ```text
@@ -130,14 +159,36 @@ v1 新增了一层 `storage_taxonomy` 包，保留 v0 原型资产，同时补�
   -> keyword_input.csv + top_asin_input.csv
   -> run_workflow.py
   -> kw.csv / st.csv / diff.csv / review_queue.csv / candidate_values.csv
+  -> 可选 keyword_metrics.csv
+```
+
+Sorftime 指标可单独运行：
+
+```bash
+PYTHONPATH=src python scripts/enrich_keyword_metrics.py \
+  --keyword-input data/local/keyword_input.csv \
+  --output outputs/workflow_v1/keyword_metrics.csv \
+  --amz-site US
+```
+
+也可集成进完整 workflow：
+
+```bash
+PYTHONPATH=src python scripts/run_workflow.py \
+  --keyword-input data/local/keyword_input.csv \
+  --top-asin-input data/local/top_asin_input.csv \
+  --output-dir outputs/workflow_v1 \
+  --with-keyword-metrics \
+  --keyword-metrics-amz-site US
 ```
 
 ## 当前限制
 
 1. v1 仍是规则驱动 baseline，不含 LLM 自动命名。
 2. 候选新值只是候选，不会自动写回 taxonomy。
-3. 当前 workflow 以内存 DataFrame 为主，适合本地批处理和中等规模迭代。
-4. 如果后续跑更大批次，需要再加 chunked processing 和增量 rerun。
+3. Sorftime 指标依赖本机 MCP 配置：`SORFTIME_MCP_URL`、`SORFTIME_API_KEY` 或 `~/.config/opencode/opencode.json`。
+4. 当前 workflow 以内存 DataFrame 为主，适合本地批处理和中等规模迭代。
+5. 如果后续跑更大批次，需要再加 chunked processing 和增量 rerun。
 
 ## 下一步建议
 

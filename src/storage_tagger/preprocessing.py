@@ -4,7 +4,11 @@ import re
 import unicodedata
 
 _SPACE_RE = re.compile(r"\s+")
-_PUNCT_RE = re.compile(r"[^a-z0-9\s\-']+")
+
+
+def _is_kept_char(ch: str) -> bool:
+    category = unicodedata.category(ch)
+    return category.startswith(("L", "N")) or ch in {" ", "-", "'"}
 
 
 def normalize_query(query: str) -> str:
@@ -15,14 +19,16 @@ def normalize_query(query: str) -> str:
     text = unicodedata.normalize("NFKC", text)
     text = text.replace("&", " and ")
     text = text.replace("_", " ")
-    text = _PUNCT_RE.sub(" ", text)
+    text = "".join(ch if _is_kept_char(ch) else " " for ch in text)
     text = _SPACE_RE.sub(" ", text).strip()
     return text
 
 
 def word_boundary_pattern(phrase: str) -> re.Pattern[str]:
     phrase = normalize_query(phrase)
-    pattern = r"(?<![a-z0-9])" + re.escape(phrase).replace(r"\ ", r"\s+") + r"(?![a-z0-9])"
+    if not phrase:
+        return re.compile(r"(?!x)x")
+    pattern = r"(?<![\w])" + re.escape(phrase).replace(r"\ ", r"\s+") + r"(?![\w])"
     return re.compile(pattern)
 
 

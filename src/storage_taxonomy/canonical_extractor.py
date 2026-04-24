@@ -156,22 +156,33 @@ class CanonicalExtractor:
         has_form = bool(fields[PRODUCT_FORM_FIELD])
 
         if location_value == "under sink" and (has_storage or has_organization):
-            return "under sink organization"
+            return self._canonical_scenario_or_empty("under sink organization")
         if location_value == "bathroom" and (has_storage or has_organization):
-            return "bathroom organization"
+            return self._canonical_scenario_or_empty("bathroom organization")
         if location_value == "over toilet" and has_storage:
-            return "toilet storage"
+            return self._canonical_scenario_or_empty("toilet storage")
         if location_value == "garage" and object_value == "tool" and has_storage:
-            return "garage tool storage"
+            return self._canonical_scenario_or_empty("garage tool storage")
         if object_value and has_display:
+            candidate = f"{object_value} display"
+            if self._canonical_exists(SCENARIO_FIELD, candidate):
+                if not fields[FUNCTION_FIELD]:
+                    fields[FUNCTION_FIELD] = "display"
+                return candidate
             if not fields[FUNCTION_FIELD]:
                 fields[FUNCTION_FIELD] = "display"
-            return f"{object_value} display"
+            return ""
         if object_value and has_organization:
-            return f"{object_value} organization"
+            return self._canonical_scenario_or_empty(f"{object_value} organization")
         if object_value and (has_storage or has_form):
-            return f"{object_value} storage"
+            return self._canonical_scenario_or_empty(f"{object_value} storage")
         return ""
+
+    def _canonical_exists(self, field: str, value: str) -> bool:
+        return value in self.registry.values_by_axis.get(field, {})
+
+    def _canonical_scenario_or_empty(self, candidate: str) -> str:
+        return candidate if self._canonical_exists(SCENARIO_FIELD, candidate) else ""
 
     @staticmethod
     def _extract_size(normalized_text: str) -> str:

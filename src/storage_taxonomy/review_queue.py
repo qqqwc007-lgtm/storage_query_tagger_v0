@@ -9,6 +9,10 @@ from .taxonomy_registry import TaxonomyRegistry
 REVIEW_QUEUE_COLUMNS = [
     "queue_source",
     "search_term",
+    "marketplace",
+    "report_date",
+    "date",
+    "reporting_period",
     "asin",
     "field_name",
     "kw_value",
@@ -23,6 +27,18 @@ REVIEW_QUEUE_COLUMNS = [
     "kw_mapping_status",
     "st_mapping_status",
     "taxonomy_version",
+]
+
+QUEUE_ID_COLUMNS = [
+    "queue_source",
+    "marketplace",
+    "report_date",
+    "date",
+    "reporting_period",
+    "search_term",
+    "asin",
+    "field_name",
+    "diff_type",
 ]
 
 
@@ -96,7 +112,7 @@ def build_review_queue(
     if not queue_rows:
         return pd.DataFrame(columns=REVIEW_QUEUE_COLUMNS)
     queue_df = pd.DataFrame(queue_rows)
-    queue_df = queue_df.drop_duplicates(subset=["queue_source", "search_term", "asin", "field_name", "diff_type"])
+    queue_df = queue_df.drop_duplicates(subset=[col for col in QUEUE_ID_COLUMNS if col in queue_df.columns])
     queue_df = queue_df.sort_values(["review_priority", "search_frequency_rank"], ascending=[False, True])
     return queue_df.reindex(columns=REVIEW_QUEUE_COLUMNS)
 

@@ -17,7 +17,10 @@ def parse_tag_ids(value: str | float | None) -> Set[str]:
 def evaluate_golden_rows(rows: Iterable[Dict[str, Any]], tagger: StorageQueryTagger | None = None) -> Dict[str, Any]:
     tagger = tagger or StorageQueryTagger()
     total = 0
+    domain_total = 0
     domain_correct = 0
+    tag_total = 0
+    full_label_total = 0
     tp = fp = fn = 0
     examples = []
 
@@ -30,8 +33,14 @@ def evaluate_golden_rows(rows: Iterable[Dict[str, Any]], tagger: StorageQueryTag
         pred_tags = set(result.tag_ids)
 
         total += 1
-        if expected_domain and result.domain_label == expected_domain:
-            domain_correct += 1
+        if expected_domain:
+            domain_total += 1
+            if result.domain_label == expected_domain:
+                domain_correct += 1
+        if expected_tags:
+            tag_total += 1
+        if expected_domain and expected_tags:
+            full_label_total += 1
 
         tp += len(pred_tags & expected_tags)
         fp += len(pred_tags - expected_tags)
@@ -53,7 +62,10 @@ def evaluate_golden_rows(rows: Iterable[Dict[str, Any]], tagger: StorageQueryTag
 
     return {
         "total": total,
-        "domain_accuracy": domain_correct / total if total else 0.0,
+        "domain_accuracy": domain_correct / domain_total if domain_total else None,
+        "domain_total": domain_total,
+        "tag_total": tag_total,
+        "full_label_total": full_label_total,
         "tag_micro_precision": precision,
         "tag_micro_recall": recall,
         "tag_micro_f1": f1,

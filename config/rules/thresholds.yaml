@@ -1,3 +1,9 @@
+domain:
+  positive_confidence: 0.95
+  negative_confidence: 0.98
+  ambiguous_confidence: 0.55
+  empty_confidence: 0.99
+  no_evidence_confidence: 0.88
 mapping:
   mapped_min_non_empty_fields: 2
 review_queue:
