@@ -20,15 +20,20 @@
 
 ```text
 storage_query_tagger_v0/
+├── AGENTS.md
+├── Makefile
 ├── README.md
-├── requirements.txt
 ├── pyproject.toml
+├── requirements.txt
 ├── config/
-│   ├── taxonomy_v0.yaml
-│   ├── rules_v0.yaml
-│   ├── thresholds.yaml
+│   ├── rules/
+│   ├── taxonomy/
 │   └── model_config.yaml
+├── data/
+│   ├── sample/
+│   └── local/              # 本地原始数据，已 gitignore
 ├── docs/
+│   ├── README.md
 │   ├── 00_project_overview.md
 │   ├── 01_v0_tagging_boundary.md
 │   ├── 02_taxonomy_design.md
@@ -36,29 +41,18 @@ storage_query_tagger_v0/
 │   ├── 04_self_learning_workflow.md
 │   ├── 05_metrics_and_acceptance.md
 │   ├── 06_human_review_sop.md
-│   └── 07_data_schema.md
+│   ├── 07_data_schema.md
+│   └── 08_workflow_v1_breakdown.md
 ├── src/storage_tagger/
-│   ├── schemas.py
-│   ├── config_loader.py
-│   ├── preprocessing.py
-│   ├── domain_gate.py
-│   ├── rule_tagger.py
-│   ├── tagger.py
-│   ├── evaluation.py
-│   ├── new_tag_discovery.py
-│   ├── cli.py
-│   └── utils.py
+│   └── ...
+├── src/storage_taxonomy/
+│   └── ...
 ├── scripts/
-│   ├── run_tagging_demo.py
-│   ├── evaluate_golden_set.py
-│   └── discover_new_tags.py
-├── data/sample/
-│   ├── sample_queries.csv
-│   └── golden_set_example.csv
+│   └── ...
 ├── review/
 │   ├── candidate_tag_review_template.csv
 │   └── human_labeling_template.csv
-├── outputs/
+├── outputs/                # 派生产物，只保留 .gitkeep
 ├── notebooks/
 └── tests/
 ```
@@ -107,7 +101,7 @@ v0 采用偏保守边界：
 
 ## Workflow v1
 
-仓库现在同时包含基于 `storage_taxonomy_prd_final_v1.md` 落地的 `workflow v1`。
+仓库现在同时包含 `workflow v1`，用于把 Amazon 搜索词和 Top ASIN 标题按同一套 canonical taxonomy 抽取、diff，并生成复核队列。
 
 ### 推荐数据目录
 
@@ -129,6 +123,34 @@ PYTHONPATH=src python scripts/prepare_local_inputs.py
 - `data/local/keyword_input.csv`
 - `data/local/top_asin_input.csv`
 
+如果全量关键词太大，正式 workflow 前先只保留搜索频率排名前 20w 的关键词，并同步裁剪 top ASIN 行：
+
+```bash
+PYTHONPATH=src python scripts/reduce_workflow_inputs.py \
+  --mode rank-cap \
+  --max-search-frequency-rank 200000 \
+  --output-dir data/local/reduced
+```
+
+这会生成：
+
+- `data/local/reduced/keyword_input.csv`
+- `data/local/reduced/top_asin_input.csv`
+- `data/local/reduced/selection_summary.json`
+
+如果已经跑完一次冷启动，可以用冷启动产物 `kw.csv` 把样本缩到收纳相关关键词。默认 `recall` 会保留 `mapped`、`partial`、`ambiguous`，适合继续发现 taxonomy 漏覆盖；如果只要干净样本，用 `--scope strict` 只保留 `mapped`、`partial`。
+
+```bash
+PYTHONPATH=src python scripts/reduce_workflow_inputs.py \
+  --mode storage-scope \
+  --keyword-input data/local/keyword_input.csv \
+  --top-asin-input data/local/top_asin_input.csv \
+  --cold-start-kw outputs/workflow_v1_full/kw.csv \
+  --scope recall \
+  --max-search-frequency-rank 200000 \
+  --output-dir data/local/reduced
+```
+
 ### 一键运行 v1 workflow
 
 ```bash
@@ -137,6 +159,25 @@ PYTHONPATH=src python scripts/run_workflow.py \
   --top-asin-input data/local/top_asin_input.csv \
   --output-dir outputs/workflow_v1
 ```
+
+如需同时接入 Sorftime 的关键词历史搜索排名和搜索容量：
+
+```bash
+PYTHONPATH=src python scripts/run_workflow.py \
+  --keyword-input data/local/keyword_input.csv \
+  --top-asin-input data/local/top_asin_input.csv \
+  --output-dir outputs/workflow_v1 \
+  --with-keyword-metrics \
+  --keyword-metrics-amz-site US
+```
+
+这会额外生成 `outputs/workflow_v1/keyword_metrics.csv`，表头固定为：
+
+```text
+关键词,时间,关键词搜索排名,关键词搜索容量
+```
+
+`时间` 会规范为 `YYYY-MM`，例如 `2024-04`。
 
 也可以使用 CLI：
 
@@ -157,6 +198,7 @@ storage-taxonomy run \
 - `review_queue.csv`
 - `candidate_values.csv`
 - `metrics_summary.json`
+- `keyword_metrics.csv`：可选，使用 `--with-keyword-metrics` 时生成
 
 ### v1 模块
 
@@ -168,6 +210,7 @@ storage-taxonomy run \
 - `diff_engine.py`：生成字段级 diff
 - `review_queue.py`：筛选 true conflict 和高价值 missing
 - `candidate_discovery.py`：从 unmapped/conflict 生成候选新值
+- `keyword_metrics.py`：调用 Sorftime `keyword_trend` 并生成关键词历史排名/容量表
 - `workflow.py`：串起完整本地 workflow
 
-更完整的拆解见 [docs/08_workflow_v1_breakdown.md](/Users/wayneqqq/Desktop/storage_query_tagger_v0/docs/08_workflow_v1_breakdown.md)。
+更完整的拆解见 [docs/08_workflow_v1_breakdown.md](docs/08_workflow_v1_breakdown.md)。

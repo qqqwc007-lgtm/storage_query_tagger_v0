@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 from pathlib import Path
 
 import pandas as pd
@@ -10,15 +11,28 @@ from .evaluation import evaluate_golden_rows
 from .new_tag_discovery import discover_candidate_clusters
 from .tagger import StorageQueryTagger, result_to_csv_row
 
+logger = logging.getLogger(__name__)
+
 
 def cmd_tag(args: argparse.Namespace) -> None:
     df = pd.read_csv(args.input)
     query_col = args.query_column
     if query_col not in df.columns:
-        if len(df.columns) >= 2:
-            query_col = df.columns[1]
-        else:
-            raise ValueError(f"Cannot find query column: {args.query_column}")
+        if not args.allow_column_fallback:
+            raise ValueError(
+                f"Missing query column '{args.query_column}'. Available columns: {list(df.columns)}"
+            )
+        if len(df.columns) < 2:
+            raise ValueError(
+                f"Missing query column '{args.query_column}' and no fallback column exists. "
+                f"Available columns: {list(df.columns)}"
+            )
+        query_col = df.columns[1]
+        logger.warning(
+            "query column %s not found; fallback to column %s because --allow-column-fallback is set",
+            args.query_column,
+            query_col,
+        )
 
     tagger = StorageQueryTagger(config_dir=args.config_dir)
     rows = [result_to_csv_row(tagger.tag(q)) for q in df[query_col].astype(str).tolist()]
@@ -59,6 +73,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_tag.add_argument("--output", required=True)
     p_tag.add_argument("--query-column", default="query")
     p_tag.add_argument("--config-dir", default=None)
+    p_tag.add_argument("--allow-column-fallback", action="store_true")
     p_tag.set_defaults(func=cmd_tag)
 
     p_eval = sub.add_parser("eval", help="Evaluate on golden set CSV")

@@ -15,6 +15,8 @@ def main() -> None:
     parser.add_argument("--keyword-chunk-size", type=int, default=100000)
     parser.add_argument("--title-chunk-size", type=int, default=100000)
     parser.add_argument("--candidate-chunk-size", type=int, default=200000)
+    parser.add_argument("--with-keyword-metrics", action="store_true", help="Fetch Sorftime keyword rank and volume history")
+    parser.add_argument("--keyword-metrics-amz-site", default=None, help="Sorftime Amazon site code, for example US")
     args = parser.parse_args()
 
     workflow = StorageTaxonomyWorkflow(config_root=args.config_root)
@@ -26,6 +28,8 @@ def main() -> None:
             keyword_chunk_size=args.keyword_chunk_size,
             title_chunk_size=args.title_chunk_size,
             candidate_chunk_size=args.candidate_chunk_size,
+            keyword_metrics_enabled=args.with_keyword_metrics,
+            keyword_metrics_amz_site=args.keyword_metrics_amz_site,
         )
     elif args.mode == "auto":
         from pathlib import Path
@@ -40,13 +44,29 @@ def main() -> None:
                 keyword_chunk_size=args.keyword_chunk_size,
                 title_chunk_size=args.title_chunk_size,
                 candidate_chunk_size=args.candidate_chunk_size,
+                keyword_metrics_enabled=args.with_keyword_metrics,
+                keyword_metrics_amz_site=args.keyword_metrics_amz_site,
             )
         else:
-            result = workflow.run(args.keyword_input, args.top_asin_input, args.output_dir)
+            result = workflow.run(
+                args.keyword_input,
+                args.top_asin_input,
+                args.output_dir,
+                keyword_metrics_enabled=args.with_keyword_metrics,
+                keyword_metrics_amz_site=args.keyword_metrics_amz_site,
+            )
     else:
-        result = workflow.run(args.keyword_input, args.top_asin_input, args.output_dir)
+        result = workflow.run(
+            args.keyword_input,
+            args.top_asin_input,
+            args.output_dir,
+            keyword_metrics_enabled=args.with_keyword_metrics,
+            keyword_metrics_amz_site=args.keyword_metrics_amz_site,
+        )
     print(f"Wrote workflow outputs to {args.output_dir}")
     print(result["metrics"])
+    if "keyword_metrics_path" in result:
+        print(f"Wrote keyword metrics to {result['keyword_metrics_path']}")
 
 
 if __name__ == "__main__":

@@ -137,3 +137,32 @@ def test_workflow_chunked_end_to_end(tmp_path):
     metrics = json.loads((output_dir / "metrics_summary.json").read_text(encoding="utf-8"))
     assert metrics["comparable_pair_count"] >= 2
     assert result["metrics"]["review_queue_size"] >= 1
+
+
+def test_workflow_chunked_uses_composite_join_keys_for_duplicate_terms(tmp_path):
+    keyword_input = tmp_path / "keyword_input.csv"
+    top_asin_input = tmp_path / "top_asin_input.csv"
+
+    pd.DataFrame([
+        {"search_term": "shoe rack", "search_frequency_rank": 1, "search_volume": "", "date": "2026-03-31", "marketplace": "US"},
+        {"search_term": "shoe rack", "search_frequency_rank": 2, "search_volume": "", "date": "2026-03-31", "marketplace": "UK"},
+    ]).to_csv(keyword_input, index=False)
+
+    pd.DataFrame([
+        {"search_term": "shoe rack", "asin": "A1", "title": "shoe storage cabinet", "asin_rank": 1, "click_share": 10.0, "conversion_share": 1.1, "date": "2026-03-31", "marketplace": "US"},
+        {"search_term": "shoe rack", "asin": "A2", "title": "shoe storage cabinet", "asin_rank": 1, "click_share": 9.0, "conversion_share": 1.0, "date": "2026-03-31", "marketplace": "UK"},
+    ]).to_csv(top_asin_input, index=False)
+
+    output_dir = tmp_path / "outputs_chunked"
+    workflow = StorageTaxonomyWorkflow()
+    workflow.run_chunked(
+        keyword_input=keyword_input,
+        top_asin_input=top_asin_input,
+        output_dir=output_dir,
+        keyword_chunk_size=1,
+        title_chunk_size=1,
+        candidate_chunk_size=2,
+    )
+
+    st_df = pd.read_csv(output_dir / "st.csv")
+    assert set(st_df["marketplace"]) == {"US", "UK"}

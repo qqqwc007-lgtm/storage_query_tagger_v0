@@ -1,4 +1,4 @@
-.PHONY: demo eval discover test prepare-inputs workflow-v1 review-candidates-go taxonomy-loop
+.PHONY: demo eval discover test prepare-inputs prepare-inputs-top200k reduce-inputs-storage workflow-v1 keyword-metrics review-candidates-go taxonomy-loop
 
 demo:
 	PYTHONPATH=src python scripts/run_tagging_demo.py --input data/sample/sample_queries.csv --output outputs/sample_tagged_queries.csv
@@ -15,8 +15,17 @@ test:
 prepare-inputs:
 	PYTHONPATH=src python scripts/prepare_local_inputs.py
 
+prepare-inputs-top200k:
+	PYTHONPATH=src python scripts/reduce_workflow_inputs.py --mode rank-cap --max-search-frequency-rank 200000 --output-dir data/local/reduced
+
+reduce-inputs-storage:
+	PYTHONPATH=src python scripts/reduce_workflow_inputs.py --mode storage-scope --scope recall --max-search-frequency-rank 200000 --output-dir data/local/reduced
+
 workflow-v1:
 	PYTHONPATH=src python scripts/run_workflow.py
+
+keyword-metrics:
+	PYTHONPATH=src python scripts/enrich_keyword_metrics.py
 
 review-candidates-go:
 	PYTHONPATH=src python scripts/review_candidate_values_opencode_go.py

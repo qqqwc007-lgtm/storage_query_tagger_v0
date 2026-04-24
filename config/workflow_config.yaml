@@ -1,5 +1,30 @@
 workflow_version: workflow_v1.0
 taxonomy_version: taxonomy_v0
+workflow:
+  # Empty means auto-detect shared keys from marketplace/report_date/date/reporting_period/search_term.
+  diff_join_keys: []
+input_reduction:
+  max_search_frequency_rank: 200000
+  storage_scope:
+    default: recall
+    recall_statuses:
+      - mapped
+      - partial
+      - ambiguous
+    strict_statuses:
+      - mapped
+      - partial
+keyword_metrics:
+  enabled: false
+  tool: keyword_trend
+  amz_site: US
+  keyword_column: search_term
+  output_file: keyword_metrics.csv
+  errors_file: keyword_metrics_errors.csv
+  timeout_seconds: 30
+  request_interval_seconds: 0
+  # Relative paths are resolved under the workflow output directory.
+  cache_dir: sorftime_cache
 keyword:
   required_columns:
     - search_term

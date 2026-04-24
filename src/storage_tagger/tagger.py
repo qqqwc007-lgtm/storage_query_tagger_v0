@@ -17,7 +17,7 @@ class StorageQueryTagger:
         self.rules = configs["rules"]
         self.thresholds = configs["thresholds"]
         self.version = taxonomy_version(self.taxonomy)
-        self.domain_gate = DomainGate(self.rules)
+        self.domain_gate = DomainGate(self.rules, thresholds=self.thresholds)
         self.rule_tagger = RuleTagger(self.taxonomy, self.rules)
 
         self.core_dimensions = set(

@@ -7,8 +7,11 @@ import pandas as pd
 
 from .candidate_discovery import discover_candidate_values
 from .diff_engine import build_diff_df
+from .input_reducer import load_input_reduction_config, reduce_inputs_by_storage_scope
 from .input_parser import prepare_local_inputs
+from .keyword_metrics import build_keyword_metrics_from_csv, write_keyword_metrics_result
 from .review_queue import build_review_queue
+from .sorftime_client import SorftimeMCPClient, load_sorftime_config
 from .workflow import StorageTaxonomyWorkflow
 
 
@@ -19,6 +22,7 @@ def cmd_prepare_inputs(args: argparse.Namespace) -> None:
         raw_csv=raw_csv,
         keyword_output=data_local / "keyword_input.csv",
         top_asin_output=data_local / "top_asin_input.csv",
+        max_search_frequency_rank=args.max_search_frequency_rank,
     )
     print(f"Prepared inputs from {raw_csv}")
     print(result)
@@ -34,6 +38,8 @@ def cmd_run(args: argparse.Namespace) -> None:
             keyword_chunk_size=args.keyword_chunk_size,
             title_chunk_size=args.title_chunk_size,
             candidate_chunk_size=args.candidate_chunk_size,
+            keyword_metrics_enabled=args.with_keyword_metrics,
+            keyword_metrics_amz_site=args.keyword_metrics_amz_site,
         )
     elif args.mode == "auto":
         keyword_size = Path(args.keyword_input).stat().st_size if Path(args.keyword_input).exists() else 0
@@ -46,13 +52,29 @@ def cmd_run(args: argparse.Namespace) -> None:
                 keyword_chunk_size=args.keyword_chunk_size,
                 title_chunk_size=args.title_chunk_size,
                 candidate_chunk_size=args.candidate_chunk_size,
+                keyword_metrics_enabled=args.with_keyword_metrics,
+                keyword_metrics_amz_site=args.keyword_metrics_amz_site,
             )
         else:
-            result = workflow.run(args.keyword_input, args.top_asin_input, args.output_dir)
+            result = workflow.run(
+                args.keyword_input,
+                args.top_asin_input,
+                args.output_dir,
+                keyword_metrics_enabled=args.with_keyword_metrics,
+                keyword_metrics_amz_site=args.keyword_metrics_amz_site,
+            )
     else:
-        result = workflow.run(args.keyword_input, args.top_asin_input, args.output_dir)
+        result = workflow.run(
+            args.keyword_input,
+            args.top_asin_input,
+            args.output_dir,
+            keyword_metrics_enabled=args.with_keyword_metrics,
+            keyword_metrics_amz_site=args.keyword_metrics_amz_site,
+        )
     print(f"Wrote workflow outputs to {args.output_dir}")
     print(result["metrics"])
+    if "keyword_metrics_path" in result:
+        print(f"Wrote keyword metrics to {result['keyword_metrics_path']}")
 
 
 def cmd_extract_kw(args: argparse.Namespace) -> None:
@@ -99,11 +121,56 @@ def cmd_discover(args: argparse.Namespace) -> None:
     print(f"Wrote candidate values to {args.output}")
 
 
+def cmd_keyword_metrics(args: argparse.Namespace) -> None:
+    config = load_sorftime_config(timeout_seconds=args.timeout)
+    client = SorftimeMCPClient(config)
+    result = build_keyword_metrics_from_csv(
+        args.keyword_input,
+        client,
+        amz_site=args.amz_site,
+        keyword_column=args.keyword_column,
+        request_interval_seconds=args.request_interval_seconds,
+        cache_dir=args.cache_dir,
+    )
+    errors_output = args.errors_output
+    if errors_output is None:
+        output = Path(args.output)
+        errors_output = str(output.with_name(f"{output.stem}_errors{output.suffix}"))
+    paths = write_keyword_metrics_result(result, args.output, errors_csv=errors_output)
+    print(f"Wrote keyword metrics to {paths['keyword_metrics_path']}")
+    if "keyword_metrics_errors_path" in paths:
+        print(f"Wrote keyword metric errors to {paths['keyword_metrics_errors_path']}")
+
+
+def cmd_reduce_inputs(args: argparse.Namespace) -> None:
+    defaults = load_input_reduction_config(args.config_root)
+    scope = args.scope or str(defaults["default_scope"])
+    statuses = _parse_statuses(args.statuses)
+    if statuses is None:
+        statuses = dict(defaults["scope_statuses"]).get(scope)
+    result = reduce_inputs_by_storage_scope(
+        keyword_input=args.keyword_input,
+        top_asin_input=args.top_asin_input,
+        cold_start_kw=args.cold_start_kw,
+        output_dir=args.output_dir,
+        scope=scope,
+        statuses=statuses,
+        max_search_frequency_rank=args.max_search_frequency_rank,
+    )
+    print(result)
+
+
 def _find_default_raw_csv(data_local: Path) -> Path:
     csv_files = sorted(path for path in data_local.glob("*.csv") if path.name not in {"keyword_input.csv", "top_asin_input.csv"})
     if len(csv_files) != 1:
         raise ValueError(f"Expected exactly one raw CSV in {data_local}, found {len(csv_files)}. Pass --raw-csv explicitly.")
     return csv_files[0]
+
+
+def _parse_statuses(value: str | None) -> list[str] | None:
+    if not value:
+        return None
+    return [part.strip() for part in value.split(",") if part.strip()]
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -113,6 +180,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_prepare = sub.add_parser("prepare-inputs", help="Split raw Amazon export into keyword_input.csv and top_asin_input.csv")
     p_prepare.add_argument("--raw-csv", default=None)
     p_prepare.add_argument("--data-local-dir", default="data/local")
+    p_prepare.add_argument("--max-search-frequency-rank", type=int, default=None)
     p_prepare.set_defaults(func=cmd_prepare_inputs)
 
     p_run = sub.add_parser("run", help="Run the full v1 workflow")
@@ -124,6 +192,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_run.add_argument("--keyword-chunk-size", type=int, default=100000)
     p_run.add_argument("--title-chunk-size", type=int, default=100000)
     p_run.add_argument("--candidate-chunk-size", type=int, default=200000)
+    p_run.add_argument("--with-keyword-metrics", action="store_true", help="Fetch Sorftime keyword rank and volume history")
+    p_run.add_argument("--keyword-metrics-amz-site", default=None, help="Sorftime Amazon site code, for example US")
     p_run.set_defaults(func=cmd_run)
 
     p_kw = sub.add_parser("extract-kw", help="Extract canonical fields from keywords")
@@ -159,6 +229,28 @@ def build_parser() -> argparse.ArgumentParser:
     p_discover.add_argument("--output", required=True)
     p_discover.add_argument("--config-root", default=None)
     p_discover.set_defaults(func=cmd_discover)
+
+    p_metrics = sub.add_parser("keyword-metrics", help="Fetch Sorftime keyword rank and volume history")
+    p_metrics.add_argument("--keyword-input", required=True)
+    p_metrics.add_argument("--output", required=True)
+    p_metrics.add_argument("--errors-output", default=None)
+    p_metrics.add_argument("--keyword-column", default="search_term")
+    p_metrics.add_argument("--amz-site", default="US")
+    p_metrics.add_argument("--timeout", type=int, default=30)
+    p_metrics.add_argument("--request-interval-seconds", type=float, default=0)
+    p_metrics.add_argument("--cache-dir", default=None)
+    p_metrics.set_defaults(func=cmd_keyword_metrics)
+
+    p_reduce = sub.add_parser("reduce-inputs", help="Reduce standard inputs from an existing cold-start kw.csv")
+    p_reduce.add_argument("--keyword-input", default="data/local/keyword_input.csv")
+    p_reduce.add_argument("--top-asin-input", default="data/local/top_asin_input.csv")
+    p_reduce.add_argument("--cold-start-kw", default="outputs/workflow_v1_full/kw.csv")
+    p_reduce.add_argument("--output-dir", default="data/local/reduced")
+    p_reduce.add_argument("--config-root", default="config")
+    p_reduce.add_argument("--scope", choices=["recall", "strict"], default=None)
+    p_reduce.add_argument("--statuses", default=None)
+    p_reduce.add_argument("--max-search-frequency-rank", type=int, default=None)
+    p_reduce.set_defaults(func=cmd_reduce_inputs)
 
     return parser
 
