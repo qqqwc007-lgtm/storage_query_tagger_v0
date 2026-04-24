@@ -36,6 +36,13 @@ def load_json(path: str | Path) -> Any:
         return json.load(f)
 
 
+def load_optional_json(path: str | Path, default: Any) -> Any:
+    path = Path(path)
+    if not path.exists():
+        return default
+    return load_json(path)
+
+
 def load_yaml(path: str | Path) -> dict[str, Any]:
     with Path(path).open("r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
@@ -53,6 +60,15 @@ class TaxonomyRegistry:
         self.alias_records = load_json(self.config_root / "taxonomy" / "aliases_v0.json")
         self.rollup_records = load_json(self.config_root / "taxonomy" / "rollups_v0.json")
         self.negative_rules = load_json(self.config_root / "taxonomy" / "negative_rules_v0.json")
+        self.candidate_suppression = load_optional_json(
+            self.config_root / "taxonomy" / "candidate_suppression_v0.json",
+            {"suppressed_terms": []},
+        )
+        self.candidate_suppression_terms = {
+            normalize_text(term)
+            for term in self.candidate_suppression.get("suppressed_terms", [])
+            if normalize_text(term)
+        }
         self.taxonomy_version = self.workflow_config.get("taxonomy_version", "taxonomy_v0")
         self.phrase_rewrites = self.rules.get("normalizer", {}).get("phrase_rewrites", {})
 

@@ -1,4 +1,4 @@
-.PHONY: demo eval discover test prepare-inputs workflow-v1
+.PHONY: demo eval discover test prepare-inputs workflow-v1 review-candidates-go taxonomy-loop
 
 demo:
 	PYTHONPATH=src python scripts/run_tagging_demo.py --input data/sample/sample_queries.csv --output outputs/sample_tagged_queries.csv
@@ -17,3 +17,9 @@ prepare-inputs:
 
 workflow-v1:
 	PYTHONPATH=src python scripts/run_workflow.py
+
+review-candidates-go:
+	PYTHONPATH=src python scripts/review_candidate_values_opencode_go.py
+
+taxonomy-loop:
+	PYTHONPATH=src python scripts/run_taxonomy_loop.py

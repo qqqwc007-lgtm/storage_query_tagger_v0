@@ -69,29 +69,9 @@ class StorageTaxonomyWorkflow:
         review_queue_df = build_review_queue(diff_df, kw_df, registry=self.registry)
 
         if not diff_df.empty and not review_queue_df.empty:
-            queue_keys = set(
-                zip(
-                    review_queue_df["queue_source"],
-                    review_queue_df["search_term"],
-                    review_queue_df["asin"],
-                    review_queue_df["field_name"],
-                    review_queue_df["diff_type"],
-                )
-            )
-            diff_df["review_required"] = diff_df.apply(
-                lambda row: (
-                    "diff",
-                    row["search_term"],
-                    row["asin"],
-                    row["field_name"],
-                    row["diff_type"],
-                )
-                in queue_keys,
-                axis=1,
-            )
-            diff_df["review_priority"] = diff_df.apply(
-                lambda row: self._lookup_review_priority(review_queue_df, row),
-                axis=1,
+            diff_df = self._annotate_diff_with_review_queue(
+                diff_df=diff_df,
+                review_queue_df=review_queue_df,
             )
 
         candidate_df = discover_candidate_values(kw_df, st_df, diff_df, registry=self.registry)
@@ -189,29 +169,9 @@ class StorageTaxonomyWorkflow:
         review_queue_df = build_review_queue(diff_df, kw_df, registry=self.registry)
 
         if not diff_df.empty and not review_queue_df.empty:
-            queue_keys = set(
-                zip(
-                    review_queue_df["queue_source"],
-                    review_queue_df["search_term"],
-                    review_queue_df["asin"],
-                    review_queue_df["field_name"],
-                    review_queue_df["diff_type"],
-                )
-            )
-            diff_df["review_required"] = diff_df.apply(
-                lambda row: (
-                    "diff",
-                    row["search_term"],
-                    row["asin"],
-                    row["field_name"],
-                    row["diff_type"],
-                )
-                in queue_keys,
-                axis=1,
-            )
-            diff_df["review_priority"] = diff_df.apply(
-                lambda row: self._lookup_review_priority(review_queue_df, row),
-                axis=1,
+            diff_df = self._annotate_diff_with_review_queue(
+                diff_df=diff_df,
+                review_queue_df=review_queue_df,
             )
             diff_df.to_csv(diff_path, index=False)
 
@@ -252,6 +212,40 @@ class StorageTaxonomyWorkflow:
         if pd.isna(max_value):
             return 0
         return int(max_value)
+
+    @staticmethod
+    def _annotate_diff_with_review_queue(
+        diff_df: pd.DataFrame,
+        review_queue_df: pd.DataFrame,
+    ) -> pd.DataFrame:
+        queue_columns = ["queue_source", "search_term", "asin", "field_name", "diff_type", "review_priority"]
+        queue_df = review_queue_df.reindex(columns=queue_columns).copy()
+        queue_df = queue_df[queue_df["queue_source"] == "diff"]
+        if queue_df.empty:
+            diff_df = diff_df.copy()
+            diff_df["review_required"] = False
+            diff_df["review_priority"] = 0
+            return diff_df
+
+        queue_df["review_required"] = True
+        queue_df = (
+            queue_df
+            .sort_values("review_priority", ascending=False)
+            .drop_duplicates(subset=["search_term", "asin", "field_name", "diff_type"])
+            .drop(columns=["queue_source"])
+        )
+
+        merged = diff_df.merge(
+            queue_df,
+            how="left",
+            on=["search_term", "asin", "field_name", "diff_type"],
+            suffixes=("", "_queue"),
+        )
+        merged["review_required"] = merged["review_required"].fillna(False).astype(bool)
+        queue_priority = pd.to_numeric(merged.pop("review_priority_queue"), errors="coerce").fillna(0).astype(int)
+        existing_priority = pd.to_numeric(merged["review_priority"], errors="coerce").fillna(0).astype(int)
+        merged["review_priority"] = queue_priority.where(queue_priority > 0, existing_priority)
+        return merged
 
     @staticmethod
     def _keyword_output_columns() -> list[str]:

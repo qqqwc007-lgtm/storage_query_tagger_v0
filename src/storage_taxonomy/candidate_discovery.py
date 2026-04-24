@@ -65,9 +65,11 @@ def _parse_json_list(value: Any) -> list[str]:
     return [part.strip() for part in text.split("|") if part.strip()]
 
 
-def _is_noise_candidate(value: str) -> bool:
+def _is_noise_candidate(value: str, suppressed_terms: set[str] | None = None) -> bool:
     candidate = str(value or "").strip().lower()
     if not candidate:
+        return True
+    if suppressed_terms and candidate in suppressed_terms:
         return True
     if candidate in _NOISE_CANDIDATE_TERMS:
         return True
@@ -89,6 +91,7 @@ def discover_candidate_values(
     registry = registry or TaxonomyRegistry()
     candidate_cfg = registry.thresholds.get("candidate_discovery", {})
     min_frequency = int(candidate_cfg.get("min_frequency", 1))
+    suppressed_terms = registry.candidate_suppression_terms
 
     buckets: dict[tuple[str, str], dict[str, Any]] = defaultdict(lambda: {
         "source_phrases": set(),
@@ -103,6 +106,8 @@ def discover_candidate_values(
         for row in df.to_dict("records"):
             search_volume = pd.to_numeric(row.get("search_volume", 0), errors="coerce")
             for phrase in _parse_json_list(row.get("unmapped_phrases")):
+                if _is_noise_candidate(phrase, suppressed_terms):
+                    continue
                 key = ("unknown", phrase)
                 bucket = buckets[key]
                 bucket["source_phrases"].add(phrase)
@@ -115,6 +120,8 @@ def discover_candidate_values(
         for row in conflicts.to_dict("records"):
             axis = str(row.get("field_name", "unknown"))
             phrase = f"{row.get('kw_value', '')} <> {row.get('st_value', '')}".strip()
+            if _is_noise_candidate(phrase, suppressed_terms):
+                continue
             key = (axis, phrase)
             bucket = buckets[key]
             bucket["source_phrases"].add(phrase)
@@ -163,6 +170,7 @@ def discover_candidate_values_from_files(
     registry = registry or TaxonomyRegistry()
     candidate_cfg = registry.thresholds.get("candidate_discovery", {})
     min_frequency = int(candidate_cfg.get("min_frequency", 1))
+    suppressed_terms = registry.candidate_suppression_terms
 
     buckets: dict[tuple[str, str], dict[str, Any]] = defaultdict(lambda: {
         "source_phrases": set(),
@@ -172,7 +180,7 @@ def discover_candidate_values_from_files(
     })
 
     def add_candidate(axis: str, candidate_value: str, source_phrase: str, example_term: str, search_volume: Any = 0) -> None:
-        if _is_noise_candidate(candidate_value):
+        if _is_noise_candidate(candidate_value, suppressed_terms):
             return
         key = (axis, candidate_value)
         bucket = buckets[key]
