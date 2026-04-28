@@ -10,7 +10,7 @@ from .candidate_discovery import discover_candidate_values, discover_candidate_v
 from .canonical_extractor import CanonicalExtractor
 from .diff_engine import DIFF_COLUMNS, build_diff_df
 from .metrics import compute_workflow_metrics
-from .review_queue import REVIEW_QUEUE_COLUMNS, build_review_queue
+from .review_queue import build_review_queue
 from .taxonomy_registry import ALL_FIELDS, TaxonomyRegistry
 
 
