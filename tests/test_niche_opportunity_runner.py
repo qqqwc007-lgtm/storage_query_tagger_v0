@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
+from zipfile import ZipFile
 
 import pytest
 
@@ -45,8 +46,21 @@ def test_generate_card_seeds_boundary_and_writes_outputs(tmp_path: Path) -> None
     assert "- VOC: missing/not enabled in v1" in card_text
     assert result.manifest_path.name == "decision_card_manifest_v1.json"
     assert result.quality_path.name == "niche_opportunity_quality_v1.json"
+    assert result.workbook_path.name == "under_bed_shoe_storage_opportunity_delivery_v1.xlsx"
+    assert result.workbook_path.exists()
+    with ZipFile(result.workbook_path) as archive:
+        workbook_xml = archive.read("xl/workbook.xml").decode("utf-8")
+        decision_sheet_xml = archive.read("xl/worksheets/sheet1.xml").decode("utf-8")
+    assert "立项卡片" in workbook_xml
+    assert "信号证据" in workbook_xml
+    assert "采购成本" in workbook_xml
+    assert "Top ASIN" in workbook_xml
+    assert "推荐立项" in decision_sheet_xml
     manifest = json.loads(result.manifest_path.read_text(encoding="utf-8"))
     assert manifest[0]["niche_id"] == "under_bed_shoe_storage"
+    assert manifest[0]["delivery_workbook_path"].endswith(
+        "under_bed_shoe_storage_opportunity_delivery_v1.xlsx"
+    )
 
     boundary_rows = _read_csv(result.boundary_path)
     assert [row["boundary_item_value"] for row in boundary_rows] == ["under bed shoe storage"]
@@ -203,6 +217,7 @@ def test_cli_args_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None
         calls["generate"] = kwargs
         return SimpleNamespace(
             card_path=Path(kwargs["output_dir"]) / "card.md",
+            workbook_path=Path(kwargs["output_dir"]) / "delivery.xlsx",
             manifest_path=Path(kwargs["output_dir"]) / "decision_card_manifest_v1.json",
             quality_path=Path(kwargs["output_dir"]) / "niche_opportunity_quality_v1.json",
             decision=SimpleNamespace(conclusion="推荐立项"),

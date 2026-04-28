@@ -113,6 +113,13 @@ def render_decision_card(
     return "\n".join(lines).rstrip() + "\n"
 
 
+def build_top_asin_evidence(
+    asin_bridge_rows: list[NicheAsinBridgeRow],
+    product_facts: list[ProductAsinFactRow],
+) -> list[_TopAsinEvidence]:
+    return _top_asin_evidence(asin_bridge_rows, product_facts)
+
+
 def _signal_rows(decision: DecisionResult) -> list[str]:
     rows = []
     for signal in decision.signals.all_signals:

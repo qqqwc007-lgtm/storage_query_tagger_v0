@@ -44,6 +44,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             reviewer=args.reviewer,
         )
         print(f"Wrote decision card: {result.card_path}")
+        print(f"Wrote business workbook: {result.workbook_path}")
         print(f"Wrote manifest: {result.manifest_path}")
         print(f"Wrote quality report: {result.quality_path}")
         print(f"Conclusion: {result.decision.conclusion}")

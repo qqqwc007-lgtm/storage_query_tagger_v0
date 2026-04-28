@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import json
 from pathlib import Path
+from zipfile import ZipFile
 
 import pytest
 
@@ -10,10 +11,12 @@ from storage_taxonomy.niche_opportunity.exports import (
     CALIBRATION_BACKLOG_FILENAME,
     DECISION_CARD_MANIFEST_FILENAME,
     OPPORTUNITY_REVIEW_FILENAME,
+    XlsxSheet,
     append_calibration_backlog,
     append_opportunity_review,
     escape_spreadsheet_formula,
     write_decision_card_manifest,
+    write_xlsx_workbook,
 )
 
 
@@ -168,3 +171,35 @@ def test_append_calibration_backlog_appends_defer_or_reject_only(
                 "review_outcome": "approve",
             },
         )
+
+
+def test_write_xlsx_workbook_writes_safe_multi_sheet_workbook(tmp_path: Path) -> None:
+    path = write_xlsx_workbook(
+        tmp_path / "delivery.xlsx",
+        (
+            XlsxSheet(
+                name="立项卡片",
+                headers=("field", "value"),
+                rows=(("conclusion", "=推荐立项"), ("units", 123)),
+            ),
+            XlsxSheet(
+                name="Top ASIN",
+                headers=("asin", "title"),
+                rows=(("B0TEST", "  +formula-like title"),),
+            ),
+        ),
+    )
+
+    assert path == tmp_path / "delivery.xlsx"
+    with ZipFile(path) as archive:
+        names = set(archive.namelist())
+        workbook_xml = archive.read("xl/workbook.xml").decode("utf-8")
+        sheet1_xml = archive.read("xl/worksheets/sheet1.xml").decode("utf-8")
+        sheet2_xml = archive.read("xl/worksheets/sheet2.xml").decode("utf-8")
+
+    assert "[Content_Types].xml" in names
+    assert "立项卡片" in workbook_xml
+    assert "Top ASIN" in workbook_xml
+    assert "'=推荐立项" in sheet1_xml
+    assert "123" in sheet1_xml
+    assert "'  +formula-like title" in sheet2_xml

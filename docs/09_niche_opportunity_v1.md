@@ -89,6 +89,7 @@ under_bed_shoe_storage,asin,B0BADASIN,invalid,manual,wrong product form,wayne,20
 
 | 文件 | 说明 |
 |---|---|
+| `<niche_id>_opportunity_delivery_v1.xlsx` | 业务交付主文件，给产品开发、供应链、运营经理周会查看 |
 | `<niche_id>_decision_card.md` | 一页 Markdown 决策卡片 |
 | `decision_card_manifest_v1.json` | 按 `niche_id` upsert 的卡片索引 |
 | `niche_opportunity_quality_v1.json` | 运行质量、source row counts、parse status、missing/proxy evidence counts |
@@ -106,6 +107,16 @@ under_bed_shoe_storage,asin,B0BADASIN,invalid,manual,wrong product form,wayne,20
 - 成本上限：售价、referral fee、FBA、头程、损耗预留、30% 毛利目标后的采购成本上限
 - Top ASIN evidence：ASIN、rank、新品标记、Units、GMV、材质、尺寸、parse status
 - Evidence gaps：VOC 缺失、proxy evidence、cost missing fields
+
+Excel 交付文件包含相同证据链的业务视图：
+
+- `立项卡片`：niche、系统结论、理由、关键词、卡片和边界文件路径
+- `信号证据`：需求、ASP、新品、结构升级、供应链匹配信号
+- `销售摘要`：GMV、Units、ASP、新品表现、评分
+- `采购成本`：建议售价、FBA、头程、30% 毛利目标、采购成本上限、首批数量
+- `Top ASIN`：Top ASIN 价格、销量、材质、尺寸、FBA、计费重、头程估算
+- `边界确认`：confirmed keyword、excluded keyword、invalid ASIN 的边界证据
+- `交付说明`：Excel、Markdown、boundary、manifest、quality report 的文件用途
 
 ## 成本规则
 

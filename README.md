@@ -237,6 +237,7 @@ python scripts/run_niche_opportunity.py record-review \
 默认输出：
 
 - `confirmed_niche_boundary_v1.csv`
+- `<niche_id>_opportunity_delivery_v1.xlsx`
 - `<niche_id>_decision_card.md`
 - `decision_card_manifest_v1.json`
 - `opportunity_review_v1.csv`

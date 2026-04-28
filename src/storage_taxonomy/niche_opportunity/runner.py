@@ -16,6 +16,7 @@ from .boundary import (
     resolve_niche_boundary,
     seed_confirmed_boundary,
 )
+from .business_workbook import write_business_delivery_workbook
 from .config import NicheOpportunityConfig, load_niche_opportunity_config
 from .cost import NicheCostEstimate, estimate_niche_cost
 from .decision_engine import DecisionResult, decide_launch
@@ -39,6 +40,7 @@ class GenerateCardResult:
     niche_id: str
     niche_name: str
     card_path: Path
+    workbook_path: Path
     manifest_path: Path
     quality_path: Path
     boundary_path: Path
@@ -140,6 +142,7 @@ def generate_card(
         config=config,
     )
     card_path = output_path / f"{clean_niche_id}_decision_card.md"
+    workbook_path = output_path / f"{clean_niche_id}_opportunity_delivery_v1.xlsx"
     card_text = render_decision_card(
         niche_id=clean_niche_id,
         niche_name=clean_niche_name,
@@ -158,6 +161,7 @@ def generate_card(
         niche_id=clean_niche_id,
         niche_name=clean_niche_name,
         card_path=card_path,
+        workbook_path=workbook_path,
         decision=decision,
         cost=cost,
         config=config,
@@ -181,11 +185,28 @@ def generate_card(
             manifest_path=manifest_path,
         ),
     )
+    workbook_path = write_business_delivery_workbook(
+        output_dir=output_path,
+        niche_id=clean_niche_id,
+        niche_name=clean_niche_name,
+        generated_at=generated_at,
+        keywords=list(resolved.included_keywords),
+        boundary=resolved,
+        product_facts=product_facts,
+        sales_summary=sales_summary,
+        decision=decision,
+        cost=cost,
+        card_path=card_path,
+        boundary_path=boundary_path,
+        manifest_path=manifest_path,
+        quality_path=quality_path,
+    )
 
     return GenerateCardResult(
         niche_id=clean_niche_id,
         niche_name=clean_niche_name,
         card_path=card_path,
+        workbook_path=workbook_path,
         manifest_path=manifest_path,
         quality_path=quality_path,
         boundary_path=boundary_path,
@@ -367,6 +388,7 @@ def _decision_card_manifest_row(
     niche_id: str,
     niche_name: str,
     card_path: Path,
+    workbook_path: Path,
     decision: DecisionResult,
     cost: NicheCostEstimate,
     config: NicheOpportunityConfig,
@@ -377,6 +399,7 @@ def _decision_card_manifest_row(
         "niche_id": niche_id,
         "niche_name": niche_name,
         "decision_card_path": str(card_path),
+        "delivery_workbook_path": str(workbook_path),
         "generated_at": generated_at,
         "conclusion": decision.conclusion,
         "decision_reason": decision.reason,
