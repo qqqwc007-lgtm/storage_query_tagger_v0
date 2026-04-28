@@ -110,6 +110,7 @@ storage-tagger discover --input outputs/sample_tagged_queries.csv --output outpu
 - [docs/07_data_schema.md](/Users/wayneqqq/Desktop/storage_query_tagger_v0/docs/07_data_schema.md)：输入输出 schema
 - [docs/08_workflow_v1_breakdown.md](/Users/wayneqqq/Desktop/storage_query_tagger_v0/docs/08_workflow_v1_breakdown.md)：workflow v1 拆解
 - [docs/09_niche_opportunity_v1.md](/Users/wayneqqq/Desktop/storage_query_tagger_v0/docs/09_niche_opportunity_v1.md)：niche opportunity v1 使用说明
+- [docs/niche_opportunity_phase_e_todo.md](/Users/wayneqqq/Desktop/storage_query_tagger_v0/docs/niche_opportunity_phase_e_todo.md)：niche opportunity Phase E 交付记录
 - [docs/storage_keyword_distribution_dashboard_design.md](/Users/wayneqqq/Desktop/storage_query_tagger_v0/docs/storage_keyword_distribution_dashboard_design.md)：关键词分布看板设计
 - [storage_taxonomy_prd_final_v1.md](/Users/wayneqqq/Desktop/storage_query_tagger_v0/storage_taxonomy_prd_final_v1.md)：taxonomy workflow v1 PRD
 
