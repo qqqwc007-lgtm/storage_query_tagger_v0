@@ -1,0 +1,41 @@
+workflow_version: niche_opportunity_v1.0
+
+cost:
+  target_gross_margin_rate: 0.30
+  referral_fee_rate: 0.15
+  storage_return_loss_reserve_rate: 0.04
+  exchange_rate: 7.20
+  first_leg_rmb_per_kg: 8.0
+  chargeable_weight_divisor_cm3_per_kg: 6000.0
+
+evidence:
+  max_source_age_days: 45
+  max_search_history_age_months: 2
+  stale_policy: warn
+
+supply_chain:
+  material_priority:
+    - fabric
+    - bamboo_wood
+    - steel_frame
+    - plastic
+  composite_material_bonus: 1.0
+  lead_time_days:
+    fabric: 30
+    bamboo_wood: 60
+    steel_frame: 60
+    plastic: 60
+
+decision_thresholds:
+  recommend_market_signal_min: 2
+  deep_dive_market_signal_count: 1
+  big_volume_monthly_search_volume: 300000
+  proxy_only_conclusion_cap: 建议深挖
+  unresolved_non_fit_conclusion: 暂缓观察
+
+source_paths:
+  keyword_asin_fact: outputs/workflow_v1/scenario_need_market_capacity_report/dashboard/keyword_asin_fact_v1.csv
+  keyword_sales_summary: outputs/workflow_v1/scenario_need_market_capacity_report/dashboard/keyword_sales_summary_v1.csv
+  scenario_sales_summary: outputs/workflow_v1/scenario_need_market_capacity_report/dashboard/scenario_sales_summary_v1.csv
+  keyword_search_volume_history: outputs/workflow_v1/keyword_search_volume_history.csv
+  product_detail_raw_dir: outputs/sorftime_product_detail_cache/US/product_detail_raw

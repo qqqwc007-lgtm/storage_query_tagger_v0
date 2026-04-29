@@ -6,11 +6,12 @@ This repo has two Python codepaths:
 
 - `src/storage_tagger/`: v0 query tagger for single-side tagging, evaluation, and candidate discovery.
 - `src/storage_taxonomy/`: v1 local workflow for `keyword_input.csv`, `top_asin_input.csv`, diffing, review queue generation, and candidate extraction.
+- `src/storage_taxonomy/niche_opportunity/`: v1 downstream selected-niche workflow for confirmed boundary, decision cards, review logs, and calibration backlog.
 
 Supporting files live in:
 
 - `config/`: YAML/JSON rules, taxonomy values, thresholds, and workflow config.
-- `scripts/`: runnable entry points such as `prepare_local_inputs.py` and `run_workflow.py`.
+- `scripts/`: runnable entry points such as `prepare_local_inputs.py`, `run_workflow.py`, and `run_niche_opportunity.py`.
 - `tests/`: `pytest` coverage for v0 and v1.
 - `data/sample/` and `data/local/`: sample fixtures and local raw inputs.
 - `outputs/`: generated CSV/JSON artifacts. Treat as derived data, not source.
@@ -23,6 +24,8 @@ Supporting files live in:
 - `make prepare-inputs`: split one raw Amazon export in `data/local/` into `keyword_input.csv` and `top_asin_input.csv`.
 - `make workflow-v1`: run the v1 workflow with default paths.
 - `PYTHONPATH=src python scripts/run_workflow.py --mode chunked`: preferred for large local batches.
+- `PYTHONPATH=src python scripts/run_niche_opportunity.py generate-card ...`: generate one confirmed niche decision card.
+- `PYTHONPATH=src python scripts/run_niche_opportunity.py record-review ...`: append the operations review log and calibration backlog.
 
 Use UTF-8 locale when running Python in this workspace:
 `LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8`.
