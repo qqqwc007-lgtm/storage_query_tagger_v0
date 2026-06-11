@@ -12,3 +12,5 @@ data/local/
 data/raw/
 data/intermediate/
 .DS_Store
+.env
+.playwright-mcp/

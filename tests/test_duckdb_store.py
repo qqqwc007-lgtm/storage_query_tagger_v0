@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pandas as pd
 
 from storage_taxonomy.duckdb_store import (

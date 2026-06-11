@@ -4,7 +4,6 @@ import argparse
 import ast
 import csv
 import json
-import math
 import re
 from collections import Counter, defaultdict
 from copy import copy

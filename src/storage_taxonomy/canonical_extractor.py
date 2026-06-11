@@ -11,7 +11,6 @@ from .taxonomy_registry import (
     ALL_FIELDS,
     FUNCTION_FIELD,
     LOCATION_FIELD,
-    MATERIAL_FIELD,
     OBJECT_FIELD,
     PRODUCT_FORM_FIELD,
     SCENARIO_FIELD,

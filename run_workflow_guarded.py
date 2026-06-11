@@ -1,3 +1,4 @@
+# ruff: noqa: E402
 import sys
 
 sys.path = [entry for entry in sys.path if entry not in ("", ".")]
